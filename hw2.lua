@@ -59,13 +59,13 @@ model:add(cudnn.SpatialConvolution(3, 32, 5, 5)) -- 3 input image channel, 32 ou
 model:add(cudnn.SpatialMaxPooling(2,2,2,2))      -- A max-pooling operation that looks at 2x2 windows and finds the max. floor(28+2*0-2)/2+1)*floor(28+2*0-2)/2+1)*32(depth do not change) = 14*14*32
 model:add(cudnn.ReLU(true))                          -- ReLU activation function
 model:add(nn.SpatialBatchNormalization(32))    --Batch normalization will provide quicker convergence
-model:add(cudnn.SpatialConvolution(32, 64, 3, 3)) -- gets 14*14*32. 64 filters. 5*5 is the surface of each kernel floor((14+2*0-5)/1 +1)*floor((14+2*0-5)/1 +1)*64=10*10*64
-model:add(cudnn.SpatialMaxPooling(2,2,2,2)) --floor(10+2*0-2)/2+1)*floor(10+2*0-2)/2+1)*64(depth do not change) = 5*5*64
+model:add(cudnn.SpatialConvolution(32, 64, 3, 3)) -- gets 14*14*32. 64 filters. 3*3 is the surface of each kernel floor((14+2*0-3)/1 +1)*floor((14+2*0-3)/1 +1)*64=12*12*64
+model:add(cudnn.SpatialMaxPooling(2,2,2,2)) --floor(12+2*0-2)/2+1)*floor(12+2*0-2)/2+1)*64(depth do not change) = 6*6*64
 model:add(cudnn.ReLU(true))
 model:add(nn.SpatialBatchNormalization(64))
-model:add(cudnn.SpatialConvolution(64, 32, 3, 3)) --gets 5*5*64. 32 filters. 3*3 is the surface of each kernel floor((5+2*0-3)/1 +1)*floor((5+2*0-3)/1 +1)*32=3*3*32
-model:add(nn.View(32*4*4):setNumInputDims(3))  -- reshapes from a 3D tensor of 32x4x4 into 1D tensor of 32*3*3
-model:add(nn.Linear(32*4*4, 64))             -- fully connected layer (matrix multiplication between input and weights). gets a 32*3*3 vector, outputs 64 neurons. parameters (32*3*3+1)*64 (the +1 is bias)
+model:add(cudnn.SpatialConvolution(64, 32, 3, 3)) --gets 6*6*64. 32 filters. 3*3 is the surface of each kernel floor((6+2*0-3)/1 +1)*floor((6+2*0-3)/1 +1)*32=4*4*32
+model:add(nn.View(32*4*4):setNumInputDims(3))  -- reshapes from a 3D tensor of 32x4x4 into 1D tensor of 32*4*4
+model:add(nn.Linear(32*4*4, 64))             -- fully connected layer (matrix multiplication between input and weights). gets a 32*4*4 vector, outputs 64 neurons. parameters (32*4*4+1)*64 (the +1 is bias)
 model:add(cudnn.ReLU(true))
 model:add(nn.Dropout(0.5))                      --Dropout layer with p=0.5
 model:add(nn.Linear(64, #classes))            -- 10 is the number of outputs of the network (in this case, 10 digits) (64+1)*10
