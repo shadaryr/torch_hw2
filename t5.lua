@@ -97,9 +97,11 @@ end
 
 local model = nn.Sequential()
 model:add(cudnn.SpatialConvolution(3, 32, 5, 5)) -- 3 input image channel, 32 output channels, 5x5 convolution kernel
-print (model)
+w, dE_dw = model:getParameters()
+print('Number of parameters:', w:nElement())
 model:add(cudnn.SpatialMaxPooling(2,2,2,2))      -- A max-pooling operation that looks at 2x2 windows and finds the max.
-print (model)
+w, dE_dw = model:getParameters()
+print('Number of parameters:', w:nElement())
 model:add(cudnn.ReLU(true))                          -- ReLU activation function
 model:add(nn.SpatialBatchNormalization(32))    --Batch normalization will provide quicker convergence
 model:add(cudnn.SpatialConvolution(32, 64, 3, 3))
