@@ -1,15 +1,3 @@
---[[
-Due to interest of time, please prepared the data before-hand into a 4D torch
-ByteTensor of size 50000x3x32x32 (training) and 10000x3x32x32 (testing) 
-
-mkdir t5
-cd t5/
-git clone https://github.com/soumith/cifar.torch.git
-cd cifar.torch/
-th Cifar10BinToTensor.lua
-
-]]
-
 require 'torch'
 require 'image'
 require 'nn'
@@ -32,53 +20,20 @@ local trainLabels = trainset.label:float():add(1)
 local testData = testset.data:float()
 local testLabels = testset.label:float():add(1)
 
---print(trainData:size())
 
-saveTensorAsGrid(trainData:narrow(1,100,36),'train_100-136.jpg') -- display the 100-136 images in dataset
---print(classes[trainLabels[100]]) -- display the 100-th image class
-
-
---  *****************************************************************
---  Let's take a look at a simple convolutional layer:
---  *****************************************************************
-
---[[
-local img = trainData[100]:cuda()
---print(img:size())
-
-local conv = cudnn.SpatialConvolution(3, 16, 5, 5, 4, 4, 0, 0)
-conv:cuda()
--- 3 input maps (RGB), 16 output maps (=number of filters in first layer)
--- 5x5 kernels (filter's size), stride 4x4, padding 0x0
-
-print(conv)
-
-local output = conv:forward(img)
---print(output:size())
-saveTensorAsGrid(output, 'convOut.jpg')
-
-local weights = conv.weight
-saveTensorAsGrid(weights, 'convWeights.jpg')
---print(weights:size())
-]]
 --  ****************************************************************
 --  Full Example - Training a ConvNet on Cifar10
 --  ****************************************************************
 
 -- Load and normalize data:
 
-local redChannel = trainData[{ {}, {1}, {}, {}  }] -- this picks {all images, 1st channel, all vertical pixels, all horizontal pixels}
---print(#redChannel)
-
 local mean = {}  -- store the mean, to normalize the test set in the future
 local stdv  = {} -- store the standard-deviation for the future
 for i=1,3 do -- over each image channel
     mean[i] = trainData[{ {}, {i}, {}, {}  }]:mean() -- mean estimation
-    --print('Channel ' .. i .. ', Mean: ' .. mean[i])
     trainData[{ {}, {i}, {}, {}  }]:add(-mean[i]) -- mean subtraction
     
     stdv[i] = trainData[{ {}, {i}, {}, {}  }]:std() -- std estimation
-    --print('Channel ' .. i .. ', Standard Deviation: ' .. stdv[i])
     trainData[{ {}, {i}, {}, {}  }]:div(stdv[i]) -- std scaling
 end
 
@@ -183,6 +138,14 @@ function plotError(trainError, testError, title)
 	gnuplot.plotflush()
 end
 
+function plotLoss(trainLoss, testLoss, title)
+	local range = torch.range(1, epochs)
+	gnuplot.pngfigure('loss.png')
+	gnuplot.plot({'trainLoss',trainLoss},{'testLoss',testLoss})
+	gnuplot.xlabel('epochs')
+	gnuplot.ylabel('Loss')
+	gnuplot.plotflush()
+end
 ---------------------------------------------------------------------
 
 epochs = 25
@@ -210,6 +173,7 @@ for e = 1, epochs do
 end
 
 plotError(trainError, testError, 'Classification Error')
+plotLoss (trainLoss, testLoss, 'Classification Loss')
 
 
 --  ****************************************************************
