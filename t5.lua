@@ -42,7 +42,7 @@ print(classes[trainLabels[100]]) -- display the 100-th image class
 --  Let's take a look at a simple convolutional layer:
 --  *****************************************************************
 
-
+--[[
 local img = trainData[100]:cuda()
 print(img:size())
 
@@ -60,13 +60,13 @@ saveTensorAsGrid(output, 'convOut.jpg')
 local weights = conv.weight
 saveTensorAsGrid(weights, 'convWeights.jpg')
 print(weights:size())
-
+]]
 --  ****************************************************************
 --  Full Example - Training a ConvNet on Cifar10
 --  ****************************************************************
 
 -- Load and normalize data:
---[[
+
 local redChannel = trainData[{ {}, {1}, {}, {}  }] -- this picks {all images, 1st channel, all vertical pixels, all horizontal pixels}
 print(#redChannel)
 
@@ -94,7 +94,7 @@ end
 --  ****************************************************************
 --  Define our neural network
 --  ****************************************************************
-
+--[[
 local model = nn.Sequential()
 model:add(cudnn.SpatialConvolution(3, 32, 5, 5)) -- 3 input image channel, 32 output channels, 5x5 convolution kernel
 model:add(cudnn.SpatialMaxPooling(2,2,2,2))      -- A max-pooling operation that looks at 2x2 windows and finds the max.
