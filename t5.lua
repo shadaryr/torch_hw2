@@ -32,19 +32,19 @@ local trainLabels = trainset.label:float():add(1)
 local testData = testset.data:float()
 local testLabels = testset.label:float():add(1)
 
-print(trainData:size())
+--print(trainData:size())
 
 saveTensorAsGrid(trainData:narrow(1,100,36),'train_100-136.jpg') -- display the 100-136 images in dataset
-print(classes[trainLabels[100]]) -- display the 100-th image class
+--print(classes[trainLabels[100]]) -- display the 100-th image class
 
 
 --  *****************************************************************
 --  Let's take a look at a simple convolutional layer:
 --  *****************************************************************
 
---[[
+
 local img = trainData[100]:cuda()
-print(img:size())
+--print(img:size())
 
 local conv = cudnn.SpatialConvolution(3, 16, 5, 5, 4, 4, 0, 0)
 conv:cuda()
@@ -54,13 +54,13 @@ conv:cuda()
 print(conv)
 
 local output = conv:forward(img)
-print(output:size())
+--print(output:size())
 saveTensorAsGrid(output, 'convOut.jpg')
 
 local weights = conv.weight
 saveTensorAsGrid(weights, 'convWeights.jpg')
-print(weights:size())
-]]
+--print(weights:size())
+
 --  ****************************************************************
 --  Full Example - Training a ConvNet on Cifar10
 --  ****************************************************************
@@ -68,17 +68,17 @@ print(weights:size())
 -- Load and normalize data:
 
 local redChannel = trainData[{ {}, {1}, {}, {}  }] -- this picks {all images, 1st channel, all vertical pixels, all horizontal pixels}
-print(#redChannel)
+--print(#redChannel)
 
 local mean = {}  -- store the mean, to normalize the test set in the future
 local stdv  = {} -- store the standard-deviation for the future
 for i=1,3 do -- over each image channel
     mean[i] = trainData[{ {}, {i}, {}, {}  }]:mean() -- mean estimation
-    print('Channel ' .. i .. ', Mean: ' .. mean[i])
+    --print('Channel ' .. i .. ', Mean: ' .. mean[i])
     trainData[{ {}, {i}, {}, {}  }]:add(-mean[i]) -- mean subtraction
     
     stdv[i] = trainData[{ {}, {i}, {}, {}  }]:std() -- std estimation
-    print('Channel ' .. i .. ', Standard Deviation: ' .. stdv[i])
+    --print('Channel ' .. i .. ', Standard Deviation: ' .. stdv[i])
     trainData[{ {}, {i}, {}, {}  }]:div(stdv[i]) -- std scaling
 end
 
@@ -94,7 +94,7 @@ end
 --  ****************************************************************
 --  Define our neural network
 --  ****************************************************************
---[[
+
 local model = nn.Sequential()
 model:add(cudnn.SpatialConvolution(3, 32, 5, 5)) -- 3 input image channel, 32 output channels, 5x5 convolution kernel
 model:add(cudnn.SpatialMaxPooling(2,2,2,2))      -- A max-pooling operation that looks at 2x2 windows and finds the max.
@@ -129,7 +129,7 @@ end
 --  Training the network
 --  ****************************************************************
 require 'optim'
-
+--[[
 local batchSize = 128
 local optimState = {}
 
