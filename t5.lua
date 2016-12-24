@@ -96,24 +96,20 @@ end
 --  ****************************************************************
 
 local model = nn.Sequential()
-model:add(cudnn.SpatialConvolution(3, 32, 5, 5)) -- 3 input image channel, 32 output channels, 5x5 convolution kernel
-w, dE_dw = model:getParameters()
-print('Number of parameters:', w:nElement())
-model:add(cudnn.SpatialMaxPooling(2,2,2,2))      -- A max-pooling operation that looks at 2x2 windows and finds the max.
-w, dE_dw = model:getParameters()
-print('Number of parameters:', w:nElement())
+model:add(cudnn.SpatialConvolution(3, 32, 5, 5)) -- 3 input image channel, 32 output channels, 5x5 convolution kernel. owidth=floor((32+2*0-5)/1 +1)=28. same goes to ohight. output- 28*28*32
+model:add(cudnn.SpatialMaxPooling(2,2,2,2))      -- A max-pooling operation that looks at 2x2 windows and finds the max. floor(28+2*0-2)/2+1)*floor(28+2*0-2)/2+1)*32(depth do not change) = 14*14*32
 model:add(cudnn.ReLU(true))                          -- ReLU activation function
 model:add(nn.SpatialBatchNormalization(32))    --Batch normalization will provide quicker convergence
-model:add(cudnn.SpatialConvolution(32, 64, 3, 3))
-model:add(cudnn.SpatialMaxPooling(2,2,2,2))
+model:add(cudnn.SpatialConvolution(32, 64, 3, 3)) -- gets 14*14*32. 64 filters. 3*3 is the surface of each kernel floor((14+2*0-3)/1 +1)*floor((14+2*0-3)/1 +1)*64=12*12*64
+model:add(cudnn.SpatialMaxPooling(2,2,2,2)) --floor(12+2*0-2)/2+1)*floor(12+2*0-2)/2+1)*64(depth do not change) = 6*6*64
 model:add(cudnn.ReLU(true))
 model:add(nn.SpatialBatchNormalization(64))
-model:add(cudnn.SpatialConvolution(64, 32, 3, 3))
+model:add(cudnn.SpatialConvolution(64, 32, 3, 3)) --gets 6*6*64. 32 filters. 3*3 is the surface of each kernel floor((6+2*0-3)/1 +1)*floor((6+2*0-3)/1 +1)*32=4*4*32
 model:add(nn.View(32*4*4):setNumInputDims(3))  -- reshapes from a 3D tensor of 32x4x4 into 1D tensor of 32*4*4
-model:add(nn.Linear(32*4*4, 256))             -- fully connected layer (matrix multiplication between input and weights)
+model:add(nn.Linear(32*4*4, 256))             -- fully connected layer (matrix multiplication between input and weights). gets a 32*4*4 vector, outputs 256 neurons. parameters (32*4*4+1)*256 (the +1 is bias)
 model:add(cudnn.ReLU(true))
 model:add(nn.Dropout(0.5))                      --Dropout layer with p=0.5
-model:add(nn.Linear(256, #classes))            -- 10 is the number of outputs of the network (in this case, 10 digits)
+model:add(nn.Linear(256, #classes))            -- 10 is the number of outputs of the network (in this case, 10 digits) (256+1)*10
 model:add(nn.LogSoftMax())                     -- converts the output to a log-probability. Useful for classificati
 
 model:cuda()
@@ -133,7 +129,7 @@ end
 --  Training the network
 --  ****************************************************************
 require 'optim'
---[[
+
 local batchSize = 128
 local optimState = {}
 
@@ -227,6 +223,7 @@ print(classes[testLabels[10] ])
 print(testData[10]:size())
 saveTensorAsGrid(testData[10],'testImg10.jpg')
 local predicted = model:forward(testData[10]:view(1,3,32,32):cuda())
+print (predicted)
 print(predicted:exp()) -- the output of the network is Log-Probabilities. To convert them to probabilities, you have to take e^x 
 
 -- assigned a probability to each classes
@@ -234,7 +231,7 @@ for i=1,predicted:size(2) do
     print(classes[i],predicted[1][i])
 end
 
-
+--[[
 
 --  ****************************************************************
 --  Visualizing Network Weights+Activations
