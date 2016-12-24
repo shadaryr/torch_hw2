@@ -65,10 +65,10 @@ model:add(cudnn.ReLU(true))
 model:add(nn.SpatialBatchNormalization(64))
 model:add(cudnn.SpatialConvolution(64, 32, 3, 3)) --gets 6*6*64. 32 filters. 3*3 is the surface of each kernel floor((6+2*0-3)/1 +1)*floor((6+2*0-3)/1 +1)*32=4*4*32
 model:add(nn.View(32*4*4):setNumInputDims(3))  -- reshapes from a 3D tensor of 32x4x4 into 1D tensor of 32*4*4
-model:add(nn.Linear(32*4*4, 256))             -- fully connected layer (matrix multiplication between input and weights). gets a 32*4*4 vector, outputs 256 neurons. parameters (32*4*4+1)*256 (the +1 is bias)
+model:add(nn.Linear(32*4*4, 64))             -- fully connected layer (matrix multiplication between input and weights). gets a 32*4*4 vector, outputs 256 neurons. parameters (32*4*4+1)*256 (the +1 is bias)
 model:add(cudnn.ReLU(true))
 model:add(nn.Dropout(0.5))                      --Dropout layer with p=0.5
-model:add(nn.Linear(256, #classes))            -- 10 is the number of outputs of the network (in this case, 10 digits) (256+1)*10
+model:add(nn.Linear(64, #classes))            -- 10 is the number of outputs of the network (in this case, 10 digits) (256+1)*10
 model:add(nn.LogSoftMax())                     -- converts the output to a log-probability. Useful for classificati
 
 model:cuda()
