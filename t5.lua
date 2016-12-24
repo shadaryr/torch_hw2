@@ -89,12 +89,12 @@ for i=1,3 do -- over each image channel
     testData[{ {}, {i}, {}, {}  }]:div(stdv[i]) -- std scaling
 end
 
-]]
+
 
 --  ****************************************************************
 --  Define our neural network
 --  ****************************************************************
---[[
+
 local model = nn.Sequential()
 model:add(cudnn.SpatialConvolution(3, 32, 5, 5)) -- 3 input image channel, 32 output channels, 5x5 convolution kernel
 model:add(cudnn.SpatialMaxPooling(2,2,2,2))      -- A max-pooling operation that looks at 2x2 windows and finds the max.
@@ -124,12 +124,12 @@ function shuffle(data,ydata) --shuffle data function
     local RandOrder = torch.randperm(data:size(1)):long()
     return data:index(1,RandOrder), ydata:index(1,RandOrder)
 end
-]--
+
 --  ****************************************************************
 --  Training the network
 --  ****************************************************************
 require 'optim'
---[[
+
 local batchSize = 128
 local optimState = {}
 
@@ -211,15 +211,15 @@ end
 
 plotError(trainError, testError, 'Classification Error')
 
-]]
+
 --  ****************************************************************
 --  Network predictions
 --  ****************************************************************
 
---[[
+
 model:evaluate()   --turn off dropout
 
-print(classes[testLabels[10]])
+print(classes[testLabels[10] ])
 print(testData[10]:size())
 saveTensorAsGrid(testData[10],'testImg10.jpg')
 local predicted = model:forward(testData[10]:view(1,3,32,32):cuda())
@@ -230,13 +230,13 @@ for i=1,predicted:size(2) do
     print(classes[i],predicted[1][i])
 end
 
---]]
+
 
 --  ****************************************************************
 --  Visualizing Network Weights+Activations
 --  ****************************************************************
 
---[[
+
 local Weights_1st_Layer = model:get(1).weight
 local scaledWeights = image.scale(image.toDisplayTensor({input=Weights_1st_Layer,padding=2}),200)
 saveTensorAsGrid(scaledWeights,'Weights_1st_Layer.jpg')
