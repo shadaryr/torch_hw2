@@ -219,10 +219,10 @@ plotError(trainError, testError, 'Classification Error')
 
 model:evaluate()   --turn off dropout
 
-print(classes[testLabels[100] ])
-print(testData[100]:size())
-saveTensorAsGrid(testData[100],'testImg100.jpg')
-local predicted = model:forward(testData[100]:view(1,3,32,32):cuda())
+print(classes[testLabels[10] ])
+print(testData[10]:size())
+saveTensorAsGrid(testData[10],'testImg10.jpg')
+local predicted = model:forward(testData[10]:view(1,3,32,32):cuda())
 print(predicted:exp()) -- the output of the network is Log-Probabilities. To convert them to probabilities, you have to take e^x 
 
 -- assigned a probability to each classes. this will print the probabilities to be classfied to each class for picture number 10
