@@ -223,23 +223,22 @@ print(classes[testLabels[10] ])
 print(testData[10]:size())
 saveTensorAsGrid(testData[10],'testImg10.jpg')
 local predicted = model:forward(testData[10]:view(1,3,32,32):cuda())
-print (predicted)
 print(predicted:exp()) -- the output of the network is Log-Probabilities. To convert them to probabilities, you have to take e^x 
 
--- assigned a probability to each classes
+-- assigned a probability to each classes. this will print the probabilities to be classfied to each class for picture number 10
 for i=1,predicted:size(2) do
     print(classes[i],predicted[1][i])
 end
 
---[[
+
 
 --  ****************************************************************
 --  Visualizing Network Weights+Activations
 --  ****************************************************************
 
 
-local Weights_1st_Layer = model:get(1).weight
-local scaledWeights = image.scale(image.toDisplayTensor({input=Weights_1st_Layer,padding=2}),200)
+local Weights_1st_Layer = model:get(1).weight -- got the weight of all features in the first layer (16*3*5*5)
+local scaledWeights = image.scale(image.toDisplayTensor({input=Weights_1st_Layer,padding=2}),200) --reschales the hight and width of the given image to have width and hight of the 2 next parameters
 saveTensorAsGrid(scaledWeights,'Weights_1st_Layer.jpg')
 
 
@@ -256,5 +255,3 @@ for l=1,9 do
 	saveTensorAsGrid(scaledWeights,'Weights_'..l..'st_Layer.jpg')
   end 
 end
-
-]]
