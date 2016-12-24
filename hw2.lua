@@ -10,6 +10,10 @@ function saveTensorAsGrid(tensor,fileName)
 	image.save(fileName,grid)
 end
 
+--  ****************************************************************
+--  Loading the data from cifar10
+--  ****************************************************************
+
 local trainset = torch.load('cifar.torch/cifar10-train.t7')
 local testset = torch.load('cifar.torch/cifar10-test.t7')
 
@@ -22,7 +26,7 @@ local testLabels = testset.label:float():add(1)
 
 
 --  ****************************************************************
---  Full Example - Training a ConvNet on Cifar10
+--  Normalizing the data
 --  ****************************************************************
 
 -- Load and normalize data:
@@ -140,13 +144,17 @@ end
 
 function plotLoss(trainLoss, testLoss, title)
 	local range = torch.range(1, epochs)
-	gnuplot.pngfigure('loss.png')
+	gnuplot.pngfigure('testVsTrainLoss.png')
 	gnuplot.plot({'trainLoss',trainLoss},{'testLoss',testLoss})
 	gnuplot.xlabel('epochs')
 	gnuplot.ylabel('Loss')
 	gnuplot.plotflush()
 end
 ---------------------------------------------------------------------
+
+--  ****************************************************************
+--  Executing the network training
+--  ****************************************************************
 
 epochs = 25
 trainLoss = torch.Tensor(epochs)
@@ -172,50 +180,9 @@ for e = 1, epochs do
     end
 end
 
+--  ****************************************************************
+--  printing plots
+--  ****************************************************************
+
 plotError(trainError, testError, 'Classification Error')
 plotLoss (trainLoss, testLoss, 'Classification Loss')
-
-
---  ****************************************************************
---  Network predictions
---  ****************************************************************
-
-
-model:evaluate()   --turn off dropout
-
-print(classes[testLabels[10] ])
-print(testData[10]:size())
-saveTensorAsGrid(testData[10],'testImg10.jpg')
-local predicted = model:forward(testData[10]:view(1,3,32,32):cuda())
-print(predicted:exp()) -- the output of the network is Log-Probabilities. To convert them to probabilities, you have to take e^x 
-
--- assigned a probability to each classes. this will print the probabilities to be classfied to each class for picture number 10
-for i=1,predicted:size(2) do
-    print(classes[i],predicted[1][i])
-end
-
-
-
---  ****************************************************************
---  Visualizing Network Weights+Activations
---  ****************************************************************
-
-
-local Weights_1st_Layer = model:get(1).weight -- got the weight of all features in the first layer (16*3*5*5)
-local scaledWeights = image.scale(image.toDisplayTensor({input=Weights_1st_Layer,padding=2}),200) --reschales the hight and width of the given image to have width and hight of the 2 next parameters
-saveTensorAsGrid(scaledWeights,'Weights_1st_Layer.jpg')
-
-
-print('Input Image')
-saveTensorAsGrid(testData[100],'testImg100.jpg')
-model:forward(testData[100]:view(1,3,32,32):cuda())
-for l=1,9 do
-  print('Layer ' ,l, tostring(model:get(l)))
-  local layer_output = model:get(l).output[1]
-  saveTensorAsGrid(layer_output,'Layer'..l..'-'..tostring(model:get(l))..'.jpg')
-  if ( l == 5 or l == 9 )then
-	local Weights_lst_Layer = model:get(l).weight
-	local scaledWeights = image.scale(image.toDisplayTensor({input=Weights_lst_Layer[1],padding=2}),200)
-	saveTensorAsGrid(scaledWeights,'Weights_'..l..'st_Layer.jpg')
-  end 
-end
