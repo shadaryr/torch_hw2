@@ -139,11 +139,11 @@ image.save('img2ZeroCrop.jpg', I)
 
 local model = nn.Sequential()
 model:add(nn.BatchFlip():float())
-model:add(cudnn.SpatialConvolution(3, 128, 5, 5)) -- 3 input image channel, 128 output channels, 5x5 convolution kernel. owidth=floor((32+2*0-5)/1 +1)=28. same goes to ohight. output- 28*28*128
-model:add(cudnn.SpatialMaxPooling(2,2,2,2))      -- A max-pooling operation that looks at 2x2 windows and finds the max. floor(28+2*0-2)/2+1)*floor(28+2*0-2)/2+1)*64(depth do not change) = 14*14*128
+model:add(cudnn.SpatialConvolution(3, 256, 5, 5)) -- 3 input image channel, 256 output channels, 5x5 convolution kernel. owidth=floor((32+2*0-5)/1 +1)=28. same goes to ohight. output- 28*28*256
+model:add(cudnn.SpatialMaxPooling(2,2,2,2))      -- A max-pooling operation that looks at 2x2 windows and finds the max. floor(28+2*0-2)/2+1)*floor(28+2*0-2)/2+1)*256(depth do not change) = 14*14*256
 model:add(cudnn.ReLU(true))                          -- ReLU activation function
-model:add(nn.SpatialBatchNormalization(128))    --Batch normalization will provide quicker convergence
-model:add(cudnn.SpatialConvolution(128, 16, 3, 3)) -- gets 14*14*128. 16 filters. 3*3 is the surface of each kernel floor((14+2*0-3)/1 +1)*floor((14+2*0-3)/1 +1)*16=12*12*16
+model:add(nn.SpatialBatchNormalization(256))    --Batch normalization will provide quicker convergence
+model:add(cudnn.SpatialConvolution(256, 16, 3, 3)) -- gets 14*14*256. 16 filters. 3*3 is the surface of each kernel floor((14+2*0-3)/1 +1)*floor((14+2*0-3)/1 +1)*16=12*12*16
 model:add(cudnn.SpatialMaxPooling(2,2,2,2)) --floor(12+2*0-2)/2+1)*floor(12+2*0-2)/2+1)*16(depth do not change) = 6*6*16
 model:add(cudnn.ReLU(true))
 model:add(nn.SpatialBatchNormalization(16))
