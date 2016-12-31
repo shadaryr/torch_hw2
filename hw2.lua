@@ -148,7 +148,7 @@ model:add(cudnn.SpatialMaxPooling(2,2,2,2)) --floor(28+2*0-2)/2+1)*floor(28+2*0-
 model:add(cudnn.ReLU(true))
 model:add(nn.SpatialBatchNormalization(16))
 model:add(cudnn.SpatialConvolution(16, 16, 3, 3)) --gets 14*14*16. 16 filters. 3*3 is the surface of each kernel floor((14+2*0-3)/1 +1)*floor((14+2*0-3)/1 +1)*16=12*12*16
-model:add(nn.View(32*4*4):setNumInputDims(3))  -- reshapes from a 3D tensor of 12x12x16 into 1D tensor of 12*12*16
+model:add(nn.View(12*12*16):setNumInputDims(3))  -- reshapes from a 3D tensor of 12x12x16 into 1D tensor of 12*12*16
 --model:add(nn.Linear(32*4*4, 64))             -- fully connected layer (matrix multiplication between input and weights). gets a 32*4*4 vector, outputs 64 neurons. (32*4*4+1)*64 (the +1 is bias)
 model:add(cudnn.ReLU(true))
 model:add(nn.Dropout(0.5))                      --Dropout layer with p=0.5
