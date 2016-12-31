@@ -208,7 +208,7 @@ function forwardNet(data,labels, train)
                 return err, dE_dw
             end
         
-            optim.adadelta(feval, w, optimState)
+            optim.adagrad(feval, w, optimState)
         end
     end
     
