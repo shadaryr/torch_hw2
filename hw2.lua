@@ -143,17 +143,17 @@ model:add(cudnn.SpatialConvolution(3, 128, 5, 5)) -- 3 input image channel, 128 
 model:add(cudnn.SpatialMaxPooling(2,2,2,2))      -- A max-pooling operation that looks at 2x2 windows and finds the max. floor(28+2*0-2)/2+1)*floor(28+2*0-2)/2+1)*64(depth do not change) = 14*14*128
 model:add(cudnn.ReLU(true))                          -- ReLU activation function
 model:add(nn.SpatialBatchNormalization(128))    --Batch normalization will provide quicker convergence
-model:add(cudnn.SpatialConvolution(128, 32, 3, 3)) -- gets 14*14*128. 32 filters. 3*3 is the surface of each kernel floor((14+2*0-3)/1 +1)*floor((14+2*0-3)/1 +1)*32=12*12*32
-model:add(cudnn.SpatialMaxPooling(2,2,2,2)) --floor(12+2*0-2)/2+1)*floor(12+2*0-2)/2+1)*32(depth do not change) = 6*6*32
+model:add(cudnn.SpatialConvolution(128, 16, 3, 3)) -- gets 14*14*128. 16 filters. 3*3 is the surface of each kernel floor((14+2*0-3)/1 +1)*floor((14+2*0-3)/1 +1)*16=12*12*16
+model:add(cudnn.SpatialMaxPooling(2,2,2,2)) --floor(12+2*0-2)/2+1)*floor(12+2*0-2)/2+1)*16(depth do not change) = 6*6*16
 model:add(cudnn.ReLU(true))
-model:add(nn.SpatialBatchNormalization(32))
-model:add(cudnn.SpatialConvolution(32, 16, 3, 3)) --gets 6*6*32. 16 filters. 3*3 is the surface of each kernel floor((6+2*0-3)/1 +1)*floor((6+2*0-3)/1 +1)*16=4*4*16
-model:add(nn.View(4*4*16):setNumInputDims(3))  -- reshapes from a 3D tensor of 4x4x16 into 1D tensor of 4*4*16
+model:add(nn.SpatialBatchNormalization(16))
+model:add(cudnn.SpatialConvolution(16, 32, 3, 3)) --gets 6*6*16. 32 filters. 3*3 is the surface of each kernel floor((6+2*0-3)/1 +1)*floor((6+2*0-3)/1 +1)*32=4*4*32
+model:add(nn.View(4*4*32):setNumInputDims(3))  -- reshapes from a 3D tensor of 4x4x32 into 1D tensor of 4*4*32
 --model:add(nn.Linear(32*4*4, 64))             -- fully connected layer (matrix multiplication between input and weights). gets a 32*4*4 vector, outputs 64 neurons. (32*4*4+1)*64 (the +1 is bias)
 model:add(cudnn.ReLU(true))
 model:add(nn.Dropout(0.5))                      --Dropout layer with p=0.5
 --model:add(nn.Linear(64, #classes))            -- 10 is the number of outputs of the network (in this case, 10 digits) (64+1)*10
-model:add(nn.Linear(256, #classes))            -- 10 is the number of outputs of the network (in this case, 10 digits) (256+1)*10
+model:add(nn.Linear(512, #classes))            -- 10 is the number of outputs of the network (in this case, 10 digits) (512+1)*10
 model:add(nn.LogSoftMax())                     -- converts the output to a log-probability. Useful for classificati
 
 model:cuda()
