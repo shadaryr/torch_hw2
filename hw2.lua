@@ -64,8 +64,9 @@ do -- data augmentation module
     if self.train then
       local permutation = torch.randperm(input:size(1))
       for i=1,input:size(1) do
-        if 0 == permutation[i] % 3  then f(input[i]) end -- need to define f (f= a data augmentation method)
-		if 1 == permutation[i] % 3  then g(input[i]) end -- need to define g (g= a data augmentation method)
+        if 0 == permutation[i] % 3  then hflip(input[i]) end 
+		if 1 == permutation[i] % 3  then randomcrop(input[i], 10, 'reflection') end
+		--if 2 == permutation[i] % 3  then randomcrop(input[i], 10, 'zero') end
       end -- and if 2== %3 -> do nothing.
     end -- in the expectancy - will train on a 3 times bigger set than the original training set, without really saving all augmented data! just by doing a lot of epochs - beacuse we do this in each epoch for each image all over again
     self.output:set(input:cuda())
@@ -126,6 +127,7 @@ image.save('img2ZeroCrop.jpg', I)
 --model:add(nn.BatchFlip():float()) --data augmentation layer
 
 local model = nn.Sequential()
+model:add(nn.BatchFlip():float())
 model:add(cudnn.SpatialConvolution(3, 32, 5, 5)) -- 3 input image channel, 32 output channels, 5x5 convolution kernel. owidth=floor((32+2*0-5)/1 +1)=28. same goes to ohight. output- 28*28*32
 model:add(cudnn.SpatialMaxPooling(2,2,2,2))      -- A max-pooling operation that looks at 2x2 windows and finds the max. floor(28+2*0-2)/2+1)*floor(28+2*0-2)/2+1)*32(depth do not change) = 14*14*32
 model:add(cudnn.ReLU(true))                          -- ReLU activation function
