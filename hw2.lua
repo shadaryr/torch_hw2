@@ -208,7 +208,7 @@ function forwardNet(data,labels, train)
                 return err, dE_dw
             end
         
-            optim.adagrad(feval, w, optimState)
+            optim.adamax(feval, w, optimState)
         end
     end
     
