@@ -88,7 +88,6 @@ do -- data augmentation module
   end
 
   function BatchFlip:updateOutput(input)
-	print ("input is", input) --TODO delete thsi!!!!
     if self.train then
       local permutation = torch.randperm(input:size(1))
       for i=1,input:size(1) do
@@ -182,10 +181,11 @@ function forwardNet(data,labels, train)
     end
     for i = 1, data:size(1) - batchSize, batchSize do
         numBatches = numBatches + 1
-        local x = data:narrow(1, i, batchSize):cuda()
-        local yt = labels:narrow(1, i, batchSize):cuda()
-        local y = model:forward(x)
-		print ("x is ", x) -- to do delete me!!!!!!
+        --local x = data:narrow(1, i, batchSize):cuda()
+        --local yt = labels:narrow(1, i, batchSize):cuda()
+        local x = data:narrow(1, i, batchSize)
+        local yt = labels:narrow(1, i, batchSize)
+		local y = model:forward(x)
         local err = criterion:forward(y, yt)
         lossAcc = lossAcc + err
         confusion:batchAdd(y,yt)
