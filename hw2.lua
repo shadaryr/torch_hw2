@@ -52,28 +52,6 @@ end
 --  data augmentation
 --  ****************************************************************
 
-do -- data augmentation module
-  local BatchFlip,parent = torch.class('nn.BatchFlip', 'nn.Module')
-
-  function BatchFlip:__init()
-    parent.__init(self)
-    self.train = true --so the data augmentation will only happen in the training phase!!!
-  end
-
-  function BatchFlip:updateOutput(input)
-    if self.train then
-      local permutation = torch.randperm(input:size(1))
-      for i=1,input:size(1) do
-        if 0 == permutation[i] % 3  then hflip(input[i]) end 
-		if 1 == permutation[i] % 3  then randomcrop(input[i], 10, 'reflection') end
-		--if 2 == permutation[i] % 3  then randomcrop(input[i], 10, 'zero') end
-      end -- and if 2== %3 -> do nothing.
-    end -- in the expectancy - will train on a 3 times bigger set than the original training set, without really saving all augmented data! just by doing a lot of epochs - beacuse we do this in each epoch for each image all over again
-    self.output:set(input:cuda())
-    return self.output
-  end
-end
- 
 local function hflip(x)
 --[[
 Flips image src horizontally (left<->right). 
@@ -100,6 +78,30 @@ local function randomcrop(im , pad, randomcrop_type)
 
    return padded:narrow(3,x,im:size(3)):narrow(2,y,im:size(2))
 end
+
+do -- data augmentation module
+  local BatchFlip,parent = torch.class('nn.BatchFlip', 'nn.Module')
+
+  function BatchFlip:__init()
+    parent.__init(self)
+    self.train = true --so the data augmentation will only happen in the training phase!!!
+  end
+
+  function BatchFlip:updateOutput(input)
+    if self.train then
+      local permutation = torch.randperm(input:size(1))
+      for i=1,input:size(1) do
+        if 0 == permutation[i] % 3  then hflip(input[i]) end 
+		if 1 == permutation[i] % 3  then randomcrop(input[i], 10, 'reflection') end
+		--if 2 == permutation[i] % 3  then randomcrop(input[i], 10, 'zero') end
+      end -- and if 2== %3 -> do nothing.
+    end -- in the expectancy - will train on a 3 times bigger set than the original training set, without really saving all augmented data! just by doing a lot of epochs - beacuse we do this in each epoch for each image all over again
+    self.output:set(input:cuda())
+    return self.output
+  end
+end
+ 
+
 
 --[[
 -- Test hflip
