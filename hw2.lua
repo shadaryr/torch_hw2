@@ -61,6 +61,15 @@ Otherwise, returns a new res Tenso
    return torch.random(0,1) == 1 and x or image.hflip(x)
 end
 
+local function vflip(x)
+--[[
+Flips image src horizontally (left<->right). 
+If dst is provided, it is used to store the output image. 
+Otherwise, returns a new res Tenso
+]]
+   return torch.random(0,1) == 1 and x or image.vflip(x)
+end
+
 local function randomcrop(im , pad, randomcrop_type)
    if randomcrop_type == 'reflection' then
       -- Each feature map of a given input is padded with the replication of the input boundary
@@ -91,7 +100,7 @@ do -- data augmentation module
     if self.train then
       local permutation = torch.randperm(input:size(1))
       for i=1,input:size(1) do
-        if 0 == permutation[i] % 3  then hflip(input[i]) end 
+        if 0 == permutation[i] % 3  then vflip(input[i]) end 
 		if 1 == permutation[i] % 3  then randomcrop(input[i], 10, 'reflection') end
 		--if 2 == permutation[i] % 3  then randomcrop(input[i], 10, 'zero') end
       end -- and if 2== %3 -> do nothing.
@@ -234,7 +243,7 @@ end
 --  Executing the network training
 --  ****************************************************************
 
-epochs = 100
+epochs = 90
 trainLoss = torch.Tensor(epochs)
 testLoss = torch.Tensor(epochs)
 trainError = torch.Tensor(epochs)
