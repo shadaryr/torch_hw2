@@ -208,7 +208,7 @@ function forwardNet(data,labels, train)
                 return err, dE_dw
             end
         
-            optim.adam(feval, w, optimState)
+            optim.adadelta(feval, w, optimState)
         end
     end
     
@@ -243,7 +243,7 @@ end
 --  Executing the network training
 --  ****************************************************************
 
-epochs = 110
+epochs = 90
 trainLoss = torch.Tensor(epochs)
 testLoss = torch.Tensor(epochs)
 trainError = torch.Tensor(epochs)
