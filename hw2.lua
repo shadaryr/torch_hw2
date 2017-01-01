@@ -153,7 +153,7 @@ model:add(cudnn.SpatialAveragePooling(4,4,4,4)) --gets 4*4*10, returns 1*1*10
 model:add(nn.View(10*1*1):setNumInputDims(3))  -- reshapes from a 3D tensor of 32x1x1 into 1D tensor of 32*1*1
 --model:add(nn.Linear(32*4*4, 64))             -- fully connected layer (matrix multiplication between input and weights). gets a 32*4*4 vector, outputs 64 neurons. (32*4*4+1)*64 (the +1 is bias)
 model:add(cudnn.ReLU(true))
-model:add(nn.Dropout(0.5))                      --Dropout layer with p=0.5
+model:add(nn.Dropout(0.2))                      --Dropout layer with p=0.2
 --model:add(nn.Linear(64, #classes))            -- 10 is the number of outputs of the network (in this case, 10 digits) (64+1)*10
 --model:add(nn.Linear(512, #classes))            -- 10 is the number of outputs of the network (in this case, 10 digits) (512+1)*10
 model:add(nn.LogSoftMax())                     -- converts the output to a log-probability. Useful for classificati
