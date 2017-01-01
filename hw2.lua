@@ -85,7 +85,8 @@ local function randomcrop(im , pad, randomcrop_type)
    local y = torch.random(1,pad*2 + 1)
    --image.save('img2ZeroPadded.jpg', padded)
 
-   return padded:narrow(3,x,im:size(3)):narrow(2,y,im:size(2))
+   return torch.random(0,1) == 1 and x or padded:narrow(3,x,im:size(3)):narrow(2,y,im:size(2))
+   --return padded:narrow(3,x,im:size(3)):narrow(2,y,im:size(2))
 end
 
 do -- data augmentation module
@@ -147,13 +148,14 @@ model:add(cudnn.SpatialConvolution(32, 64, 3, 3)) -- gets 14*14*32. 64 filters. 
 model:add(cudnn.SpatialMaxPooling(2,2,2,2)) --floor(12+2*0-2)/2+1)*floor(12+2*0-2)/2+1)*64(depth do not change) = 6*6*64
 model:add(cudnn.ReLU(true))
 model:add(nn.SpatialBatchNormalization(64))
-model:add(cudnn.SpatialConvolution(64, 32, 3, 3)) --gets 6*6*64. 32 filters. 3*3 is the surface of each kernel floor((6+2*0-3)/1 +1)*floor((6+2*0-3)/1 +1)*32=4*4*32
-model:add(nn.View(32*4*4):setNumInputDims(3))  -- reshapes from a 3D tensor of 32x4x4 into 1D tensor of 32*4*4
+model:add(cudnn.SpatialConvolution(64, 10, 3, 3)) --gets 6*6*64. 10 filters. 3*3 is the surface of each kernel floor((6+2*0-3)/1 +1)*floor((6+2*0-3)/1 +1)*10=4*4*10
+model:add(cudnn.SpatialAveragePooling(4,4,4,4)) --gets 4*4*10, returns 1*1*10
+model:add(nn.View(10*1*1):setNumInputDims(3))  -- reshapes from a 3D tensor of 32x1x1 into 1D tensor of 32*1*1
 --model:add(nn.Linear(32*4*4, 64))             -- fully connected layer (matrix multiplication between input and weights). gets a 32*4*4 vector, outputs 64 neurons. (32*4*4+1)*64 (the +1 is bias)
 model:add(cudnn.ReLU(true))
 model:add(nn.Dropout(0.5))                      --Dropout layer with p=0.5
 --model:add(nn.Linear(64, #classes))            -- 10 is the number of outputs of the network (in this case, 10 digits) (64+1)*10
-model:add(nn.Linear(512, #classes))            -- 10 is the number of outputs of the network (in this case, 10 digits) (512+1)*10
+--model:add(nn.Linear(512, #classes))            -- 10 is the number of outputs of the network (in this case, 10 digits) (512+1)*10
 model:add(nn.LogSoftMax())                     -- converts the output to a log-probability. Useful for classificati
 
 model:cuda()
@@ -208,7 +210,7 @@ function forwardNet(data,labels, train)
                 return err, dE_dw
             end
         
-            optim.adamax(feval, w, optimState)
+            optim.adam(feval, w, optimState)
         end
     end
     
