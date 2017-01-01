@@ -85,8 +85,8 @@ local function randomcrop(im , pad, randomcrop_type)
    local y = torch.random(1,pad*2 + 1)
    --image.save('img2ZeroPadded.jpg', padded)
 
-   return torch.random(0,1) == 1 and x or padded:narrow(3,x,im:size(3)):narrow(2,y,im:size(2))
-   --return padded:narrow(3,x,im:size(3)):narrow(2,y,im:size(2))
+   --return torch.random(0,1) == 1 and x or padded:narrow(3,x,im:size(3)):narrow(2,y,im:size(2))
+   return padded:narrow(3,x,im:size(3)):narrow(2,y,im:size(2))
 end
 
 do -- data augmentation module
