@@ -254,8 +254,9 @@ testError = torch.Tensor(epochs)
 model:apply(function(l) l:reset() end)
 
 timer = torch.Timer()
-
+print "starting epochs"
 for e = 1, epochs do
+	print "calculating epch e"
     trainData, trainLabels = shuffle(trainData, trainLabels) --shuffle training data
     trainLoss[e], trainError[e] = forwardNet(trainData, trainLabels, true)
     testLoss[e], testError[e], confusion = forwardNet(testData, testLabels, false)
