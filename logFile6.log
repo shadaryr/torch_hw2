@@ -1,0 +1,13 @@
+Number of parameters: 49726
+ The criterion is: CrossEntropyCriterion
+ optim function: sgd
+batchSize: 64
+Epoc 1: 
+Training error: 0.57274327784891 Training Loss: 1.5651281350096
+Test error: 0.49729567307692 Test Loss: 1.3849446857587
+Epoc 3: 
+Training error: 0.39870758642766 Training Loss: 1.1274022927052
+Test error: 0.48076923076923 Test Loss: 1.3482710367594
+Epoc 4: 
+Training error: 0.38394286171575 Training Loss: 1.0799607508619
+Test error: 0.44681490384615 Test Loss: 1.2866036032255

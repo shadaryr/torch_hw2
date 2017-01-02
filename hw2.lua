@@ -10,6 +10,7 @@ function saveTensorAsGrid(tensor,fileName)
 	image.save(fileName,grid)
 end
 
+
 --  ****************************************************************
 --  Loading the data from cifar10
 --  ****************************************************************
@@ -101,45 +102,62 @@ do -- data augmentation module
     if self.train then
       local permutation = torch.randperm(input:size(1))
       for i=1,input:size(1) do
-        if 0 == permutation[i] % 3  then hflip(input[i]) end 
-		if 1 == permutation[i] % 3  then randomcrop(input[i], 10, 'reflection') end
-		if 2 == permutation[i] % 3  then randomcrop(input[i], 10, 'zero') end
-      end -- and if 2== %3 -> do nothing.
-    end -- in the expectancy - will train on a 3 times bigger set than the original training set, without really saving all augmented data! just by doing a lot of epochs - beacuse we do this in each epoch for each image all over again
+		local mod = permutation[i] % 4
+        if 0 == mod  then image.hflip(input[i]) end 
+		if 1 == mod  then randomcrop(input[i], 10, 'reflection') end
+		if 2 == mod  then randomcrop(input[i], 10, 'zero') end
+      end -- and if mod ==3 -> do nothing.
+    end
     self.output:set(input:cuda())
     return self.output
   end
 end
  
 
-
---[[
--- Test hflip
-local im = image.load('img.jpg') --im will hold a tensor
-image.save('imghflip.jpg', image.hflip(im))
-
--- Test reflection
-local im = image.load('img.jpg')
-local I = randomcrop(im, 10, 'reflection')
-print(I:size(),im:size())
-image.save('img2ReflectionCrop.jpg', I)
-
--- Test zero padding with crop
-local im = image.load('img.jpg')
-local I = randomcrop(im, 10, 'zero')
-print(I:size(),im:size())
-image.save('img2ZeroCrop.jpg', I)
-]]
-
 --  ****************************************************************
 --  Define our neural network
 --  ****************************************************************
+--[[
 -- all the calculation near the layers are the output size of the layer
-
---model:add(nn.BatchFlip():float()) --data augmentation layer
-
 local model = nn.Sequential()
-model:add(nn.BatchFlip():float())
+model:add(nn.BatchFlip():float())--data augmentation layer
+model:add(cudnn.SpatialConvolution(3, 64, 5, 5, 1, 1, 2, 2))
+model:add(nn.SpatialBatchNormalization(64))    --Batch normalization will provide quicker convergence
+model:add(cudnn.ReLU(true))
+model:add(cudnn.SpatialConvolution(64, 32, 1, 1)) -- 
+model:add(nn.SpatialBatchNormalization(32))    --Batch normalization will provide quicker convergence
+model:add(cudnn.ReLU(true))
+model:add(cudnn.SpatialConvolution(32, 32, 1, 1)) -- 
+model:add(nn.SpatialBatchNormalization(32))    --Batch normalization will provide quicker convergence
+model:add(cudnn.ReLU(true))
+model:add(cudnn.SpatialMaxPooling(3,3,2,2):ceil()) --
+model:add(nn.Dropout(0.5))
+model:add(cudnn.SpatialConvolution(32, 32, 5, 5, 1, 1, 2, 2)) -- 
+model:add(nn.SpatialBatchNormalization(32))    --Batch normalization will provide quicker convergence
+model:add(cudnn.ReLU(true))
+model:add(cudnn.SpatialConvolution(32, 32, 1, 1)) -- 
+model:add(nn.SpatialBatchNormalization(32))    --Batch normalization will provide quicker convergence
+model:add(cudnn.ReLU(true))
+model:add(cudnn.SpatialConvolution(32, 32, 1, 1)) -- 
+model:add(nn.SpatialBatchNormalization(32))    --Batch normalization will provide quicker convergence
+model:add(cudnn.ReLU(true))
+model:add(cudnn.SpatialAveragePooling(3,3,2,2):ceil()) --
+model:add(nn.Dropout(0.5))
+model:add(cudnn.SpatialConvolution(32, 32, 3, 3, 1, 1, 1, 1)) -- 
+model:add(nn.SpatialBatchNormalization(32))    --Batch normalization will provide quicker convergence
+model:add(cudnn.ReLU(true))
+model:add(cudnn.SpatialConvolution(32, 32, 1, 1)) -- 
+model:add(nn.SpatialBatchNormalization(32))    --Batch normalization will provide quicker convergence
+model:add(cudnn.ReLU(true))
+model:add(cudnn.SpatialConvolution(32, 10, 1, 1)) -- 
+model:add(nn.SpatialBatchNormalization(10))    --Batch normalization will provide quicker convergence
+model:add(cudnn.ReLU(true))
+model:add(cudnn.SpatialAveragePooling(8,8,1,1):ceil()) --
+model:add(nn.View(#classes))
+]]
+-- old architecture
+local model = nn.Sequential()
+--model:add(nn.BatchFlip():float())--data augmentation layer
 model:add(cudnn.SpatialConvolution(3, 32, 5, 5)) -- 3 input image channel, 32 output channels, 5x5 convolution kernel. owidth=floor((32+2*0-5)/1 +1)=28. same goes to ohight. output- 28*28*32
 model:add(cudnn.SpatialMaxPooling(2,2,2,2))      -- A max-pooling operation that looks at 2x2 windows and finds the max. floor(28+2*0-2)/2+1)*floor(28+2*0-2)/2+1)*32(depth do not change) = 14*14*32
 model:add(cudnn.ReLU(true))                          -- ReLU activation function
@@ -152,13 +170,14 @@ model:add(cudnn.SpatialConvolution(64, 32, 3, 3)) --gets 6*6*64. 32 filters. 3*3
 model:add(nn.View(32*4*4):setNumInputDims(3))  -- reshapes from a 3D tensor of 32x4x4 into 1D tensor of 32*4*4
 --model:add(nn.Linear(32*4*4, 64))             -- fully connected layer (matrix multiplication between input and weights). gets a 32*4*4 vector, outputs 64 neurons. (32*4*4+1)*64 (the +1 is bias)
 model:add(cudnn.ReLU(true))
-model:add(nn.Dropout(0.2))                      --Dropout layer with p=0.5
+model:add(nn.Dropout(0.5))                      --Dropout layer with p=0.5
 --model:add(nn.Linear(64, #classes))            -- 10 is the number of outputs of the network (in this case, 10 digits) (64+1)*10
 model:add(nn.Linear(512, #classes))            -- 10 is the number of outputs of the network (in this case, 10 digits) (512+1)*10
-model:add(nn.LogSoftMax())                     -- converts the output to a log-probability. Useful for classificati
+model:add(nn.LogSoftMax())                     -- converts the output to a log-probability. Useful for classification
+
 
 model:cuda()
-criterion = nn.ClassNLLCriterion():cuda()
+criterion = nn.CrossEntropyCriterion():cuda()
 
 
 w, dE_dw = model:getParameters()
@@ -175,8 +194,10 @@ end
 --  ****************************************************************
 require 'optim'
 
-local batchSize = 128
-local optimState = {}
+local batchSize = 64
+local optimState = {
+learningRate = 0.05
+}
 
 function forwardNet(data,labels, train)
     --another helpful function of optim is ConfusionMatrix
@@ -191,10 +212,10 @@ function forwardNet(data,labels, train)
     end
     for i = 1, data:size(1) - batchSize, batchSize do
         numBatches = numBatches + 1
-        --local x = data:narrow(1, i, batchSize):cuda()
-        --local yt = labels:narrow(1, i, batchSize):cuda()
-        local x = data:narrow(1, i, batchSize)
-        local yt = labels:narrow(1, i, batchSize)
+        local x = data:narrow(1, i, batchSize):cuda()
+        local yt = labels:narrow(1, i, batchSize):cuda()
+	--local x = data:narrow(1, i, batchSize)
+        --local yt = labels:narrow(1, i, batchSize)
 		local y = model:forward(x)
         local err = criterion:forward(y, yt)
         lossAcc = lossAcc + err
@@ -209,7 +230,7 @@ function forwardNet(data,labels, train)
                 return err, dE_dw
             end
         
-            optim.adam(feval, w, optimState)
+            optim.sgd(feval, w, optimState)
         end
     end
     
@@ -244,7 +265,7 @@ end
 --  Executing the network training
 --  ****************************************************************
 
-epochs = 90
+epochs = 500
 trainLoss = torch.Tensor(epochs)
 testLoss = torch.Tensor(epochs)
 trainError = torch.Tensor(epochs)
@@ -261,12 +282,10 @@ for e = 1, epochs do
     trainLoss[e], trainError[e] = forwardNet(trainData, trainLabels, true)
     testLoss[e], testError[e], confusion = forwardNet(testData, testLabels, false)
     
-    if e % 5 == 0 then
-        print('Epoch ' .. e .. ':')
-        print('Training error: ' .. trainError[e], 'Training Loss: ' .. trainLoss[e])
-        print('Test error: ' .. testError[e], 'Test Loss: ' .. testLoss[e])
-        print(confusion)
-    end
+	print('Epoch ' .. e .. ':')
+	print('Training error: ' .. trainError[e], 'Training Loss: ' .. trainLoss[e])
+	print('Test error: ' .. testError[e], 'Test Loss: ' .. testLoss[e])
+	print(confusion)
 end
 
 --  ****************************************************************
