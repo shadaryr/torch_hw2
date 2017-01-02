@@ -117,48 +117,7 @@ end
 --  ****************************************************************
 --  Define our neural network
 --  ****************************************************************
---[[
 -- all the calculation near the layers are the output size of the layer
-<<<<<<< HEAD
-local model = nn.Sequential()
-model:add(nn.BatchFlip():float())--data augmentation layer
-model:add(cudnn.SpatialConvolution(3, 64, 5, 5, 1, 1, 2, 2))
-model:add(nn.SpatialBatchNormalization(64))    --Batch normalization will provide quicker convergence
-model:add(cudnn.ReLU(true))
-model:add(cudnn.SpatialConvolution(64, 32, 1, 1)) -- 
-model:add(nn.SpatialBatchNormalization(32))    --Batch normalization will provide quicker convergence
-model:add(cudnn.ReLU(true))
-model:add(cudnn.SpatialConvolution(32, 32, 1, 1)) -- 
-model:add(nn.SpatialBatchNormalization(32))    --Batch normalization will provide quicker convergence
-model:add(cudnn.ReLU(true))
-model:add(cudnn.SpatialMaxPooling(3,3,2,2):ceil()) --
-model:add(nn.Dropout(0.5))
-model:add(cudnn.SpatialConvolution(32, 32, 5, 5, 1, 1, 2, 2)) -- 
-model:add(nn.SpatialBatchNormalization(32))    --Batch normalization will provide quicker convergence
-model:add(cudnn.ReLU(true))
-model:add(cudnn.SpatialConvolution(32, 32, 1, 1)) -- 
-model:add(nn.SpatialBatchNormalization(32))    --Batch normalization will provide quicker convergence
-model:add(cudnn.ReLU(true))
-model:add(cudnn.SpatialConvolution(32, 32, 1, 1)) -- 
-model:add(nn.SpatialBatchNormalization(32))    --Batch normalization will provide quicker convergence
-model:add(cudnn.ReLU(true))
-model:add(cudnn.SpatialAveragePooling(3,3,2,2):ceil()) --
-model:add(nn.Dropout(0.5))
-model:add(cudnn.SpatialConvolution(32, 32, 3, 3, 1, 1, 1, 1)) -- 
-model:add(nn.SpatialBatchNormalization(32))    --Batch normalization will provide quicker convergence
-model:add(cudnn.ReLU(true))
-model:add(cudnn.SpatialConvolution(32, 32, 1, 1)) -- 
-model:add(nn.SpatialBatchNormalization(32))    --Batch normalization will provide quicker convergence
-model:add(cudnn.ReLU(true))
-model:add(cudnn.SpatialConvolution(32, 10, 1, 1)) -- 
-model:add(nn.SpatialBatchNormalization(10))    --Batch normalization will provide quicker convergence
-model:add(cudnn.ReLU(true))
-model:add(cudnn.SpatialAveragePooling(8,8,1,1):ceil()) --
-model:add(nn.View(#classes))
-]]
--- old architecture
-local model = nn.Sequential()
-=======
 local model = nn.Sequential()
 model:add(nn.BatchFlip():float())--data augmentation layer
 model:add(cudnn.SpatialConvolution(3, 64, 5, 5, 1, 1, 2, 2))
@@ -197,10 +156,9 @@ model:add(nn.View(#classes))
 
 --[[ old architecture
 local model = nn.Sequential()
->>>>>>> 3460270d64f1e814cffcedd55c0d113378ff31d2
 --model:add(nn.BatchFlip():float())--data augmentation layer
 model:add(cudnn.SpatialConvolution(3, 32, 5, 5)) -- 3 input image channel, 32 output channels, 5x5 convolution kernel. owidth=floor((32+2*0-5)/1 +1)=28. same goes to ohight. output- 28*28*32
-model:add(cudnn.SpatialMaxPooling(2,2,2,2))      -- A max-pooling operation that looks at 2x2 windows and finds the max. floor(28+2*0-2)/2+1)*floor(28+2*0-2)/2+1)*32(depth do not change) = 14*14*32
+--model:add(cudnn.SpatialMaxPooling(2,2,2,2))      -- A max-pooling operation that looks at 2x2 windows and finds the max. floor(28+2*0-2)/2+1)*floor(28+2*0-2)/2+1)*32(depth do not change) = 14*14*32
 model:add(cudnn.ReLU(true))                          -- ReLU activation function
 model:add(nn.SpatialBatchNormalization(32))    --Batch normalization will provide quicker convergence
 model:add(cudnn.SpatialConvolution(32, 64, 3, 3)) -- gets 14*14*32. 64 filters. 3*3 is the surface of each kernel floor((14+2*0-3)/1 +1)*floor((14+2*0-3)/1 +1)*64=12*12*64
@@ -214,12 +172,8 @@ model:add(cudnn.ReLU(true))
 model:add(nn.Dropout(0.5))                      --Dropout layer with p=0.5
 --model:add(nn.Linear(64, #classes))            -- 10 is the number of outputs of the network (in this case, 10 digits) (64+1)*10
 model:add(nn.Linear(512, #classes))            -- 10 is the number of outputs of the network (in this case, 10 digits) (512+1)*10
-<<<<<<< HEAD
-model:add(nn.LogSoftMax())                     -- converts the output to a log-probability. Useful for classification
-=======
 model:add(nn.LogSoftMax())                     -- converts the output to a log-probability. Useful for classificati
 ]]
->>>>>>> 3460270d64f1e814cffcedd55c0d113378ff31d2
 
 
 model:cuda()
@@ -253,15 +207,11 @@ end
 --  ****************************************************************
 require 'optim'
 
-<<<<<<< HEAD
-local batchSize = 64
-=======
 local batchSize = 32
 f:write('batchSize: ')
 f:write(batchSize)
 f:write('\n')
 f:close()
->>>>>>> 3460270d64f1e814cffcedd55c0d113378ff31d2
 local optimState = {
 learningRate = 0.05
 }
@@ -279,17 +229,10 @@ function forwardNet(data,labels, train)
     end
     for i = 1, data:size(1) - batchSize, batchSize do
         numBatches = numBatches + 1
-<<<<<<< HEAD
-        local x = data:narrow(1, i, batchSize):cuda()
-        local yt = labels:narrow(1, i, batchSize):cuda()
-	--local x = data:narrow(1, i, batchSize)
-        --local yt = labels:narrow(1, i, batchSize)
-=======
         --local x = data:narrow(1, i, batchSize):cuda()
         --local yt = labels:narrow(1, i, batchSize):cuda()
 		local x = data:narrow(1, i, batchSize)
         local yt = labels:narrow(1, i, batchSize)
->>>>>>> 3460270d64f1e814cffcedd55c0d113378ff31d2
 		local y = model:forward(x)
         local err = criterion:forward(y, yt)
         lossAcc = lossAcc + err
@@ -360,8 +303,6 @@ for e = 1, epochs do
 	print('Training error: ' .. trainError[e], 'Training Loss: ' .. trainLoss[e])
 	print('Test error: ' .. testError[e], 'Test Loss: ' .. testLoss[e])
 	print(confusion)
-<<<<<<< HEAD
-=======
 	
 	if e == 1 then
       bestError = testError[e]
@@ -404,7 +345,6 @@ local f = assert(io.open('logFile1.log', 'a+'), 'Failed to open input file')
        f:write('Test error: ' .. WritetestError .. ' Test Loss: ' .. WritetestLoss ..'\n')
     end	]]
     f:close()
->>>>>>> 3460270d64f1e814cffcedd55c0d113378ff31d2
 end
 
 --  ****************************************************************
