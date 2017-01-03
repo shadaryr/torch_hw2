@@ -282,7 +282,7 @@ end
 --  Executing the network training
 --  ****************************************************************
 
-epochs = 3
+epochs = 700
 trainLoss = torch.Tensor(epochs)
 testLoss = torch.Tensor(epochs)
 trainError = torch.Tensor(epochs)
