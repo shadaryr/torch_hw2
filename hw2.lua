@@ -307,8 +307,6 @@ for e = 1, epochs do
 	if e == 1 then
       bestError = testError[e]
 	end
-   
-end
 
 local WritetrainError = trainError[e]
 local WritetrainLoss = trainLoss[e] 
