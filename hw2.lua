@@ -320,6 +320,7 @@ local f = assert(io.open('logFile1.log', 'a+'), 'Failed to open input file')
 		print(testError[e])
 		print('\nbest Error: ')
 		print(bestError)
+	end
 	if (testError[e] < bestError) then
 	    bestError = testError[e]
 	    print('save the model')
