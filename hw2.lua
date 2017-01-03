@@ -282,7 +282,7 @@ end
 --  Executing the network training
 --  ****************************************************************
 
-epochs = 500
+epochs = 2
 trainLoss = torch.Tensor(epochs)
 testLoss = torch.Tensor(epochs)
 trainError = torch.Tensor(epochs)
@@ -315,15 +315,15 @@ local WritetrainLoss = trainLoss[e]
 local WritetestError = testError[e]
 local WritetestLoss = testLoss[e]
 local f = assert(io.open('logFile1.log', 'a+'), 'Failed to open input file')
-   if e > 1 then
-	print('test Error: ')
-	print(testError[e])
-	print('\nbest Error: ')
-        print(bestError)
+	if e > 1 then
+		print('test Error: ')
+		print(testError[e])
+		print('\nbest Error: ')
+		print(bestError)
 	if (testError[e] < bestError) then
 	    bestError = testError[e]
 	    print('save the model')
-	    torch.save('HW2_v1.t7', model)
+	    torch.save('HW2_network_v1.t7', model)
 	        --f = assert(io.open('logFile.log', 'r'), 'Failed to open input file')
 	    f:write('Epoch ' .. e .. ': \n')
 	    WritetrainError = trainError[e]
@@ -333,9 +333,9 @@ local f = assert(io.open('logFile1.log', 'a+'), 'Failed to open input file')
 	    f:write('Training error: ' .. WritetrainError ..  ' Training Loss: ' .. WritetrainLoss .. '\n')
 	    f:write('Test error: ' .. WritetestError .. ' Test Loss: ' .. WritetestLoss ..'\n')
 	end
---[[ else
+	else
        print('save the model')
-       torch.save('ConvClassifierModel6.t7', model)
+       torch.save('HW2_network_v1.t7', model)
        f:write('Epoc ' .. e .. ': \n')
        WritetrainError = trainError[e]
        WritetrainLoss = trainLoss[e] 
@@ -343,7 +343,7 @@ local f = assert(io.open('logFile1.log', 'a+'), 'Failed to open input file')
        WritetestLoss = testLoss[e]
        f:write('Training error: ' .. WritetrainError ..  ' Training Loss: ' .. WritetrainLoss .. '\n')
        f:write('Test error: ' .. WritetestError .. ' Test Loss: ' .. WritetestLoss ..'\n')
-    end	]]
+    end
     f:close()
 end
 
