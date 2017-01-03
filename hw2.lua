@@ -184,7 +184,7 @@ w, dE_dw = model:getParameters()
 print('Number of parameters:', w:nElement())
 print(model)
 
-local f = assert(io.open('logFile1.log', 'w'), 'Failed to open input file')
+local f = assert(io.open('logFile2.log', 'w'), 'Failed to open input file')
  --print('open the file')
    --f:write('The model is: ')
 --print('start print to the log')
@@ -293,31 +293,40 @@ model:apply(function(l) l:reset() end)
 
 timer = torch.Timer()
 print "starting epochs"
+
 for e = 1, epochs do
-	print ('calculating epch'..e)
+    print('start epoch ' .. e .. ':')
+		
     trainData, trainLabels = shuffle(trainData, trainLabels) --shuffle training data
     trainLoss[e], trainError[e] = forwardNet(trainData, trainLabels, true)
     testLoss[e], testError[e], confusion = forwardNet(testData, testLabels, false)
     
-	print('Epoch ' .. e .. ':')
-	print('Training error: ' .. trainError[e], 'Training Loss: ' .. trainLoss[e])
-	print('Test error: ' .. testError[e], 'Test Loss: ' .. testLoss[e])
-	print(confusion)
-	
-	if e == 1 then
+    if e % 5 == 0 then
+        print('Epoch ' .. e .. ':')
+        print('Training error: ' .. trainError[e], 'Training Loss: ' .. trainLoss[e])
+        print('Test error: ' .. testError[e], 'Test Loss: ' .. testLoss[e])
+        print(confusion)
+   else
+	 
+        print('Epoch ' .. e .. ':')
+        print('Training error: ' .. trainError[e], 'Training Loss: ' .. trainLoss[e])
+        print('Test error: ' .. testError[e], 'Test Loss: ' .. testLoss[e])
+   end
+   
+   if e == 1 then
       bestError = testError[e]
-	end
+   end
 
-	local WritetrainError = trainError[e]
-	local WritetrainLoss = trainLoss[e] 
-	local WritetestError = testError[e]
-	local WritetestLoss = testLoss[e]
-	local f = assert(io.open('logFile1.log', 'a+'), 'Failed to open input file')
-	if e > 1 then
-		print('test Error: ')
-		print(testError[e])
-		print('\nbest Error: ')
-		print(bestError)
+local WritetrainError = trainError[e]
+local WritetrainLoss = trainLoss[e] 
+local WritetestError = testError[e]
+local WritetestLoss = testLoss[e]
+local f = assert(io.open('logFile2.log', 'a+'), 'Failed to open input file')
+   if e > 1 then
+	print('test Error: ')
+	print(testError[e])
+	print('\nbest Error: ')
+        print(bestError)
 	if (testError[e] < bestError) then
 	    bestError = testError[e]
 	    print('save the model')
@@ -330,18 +339,19 @@ for e = 1, epochs do
 	    WritetestLoss = testLoss[e]
 	    f:write('Training error: ' .. WritetrainError ..  ' Training Loss: ' .. WritetrainLoss .. '\n')
 	    f:write('Test error: ' .. WritetestError .. ' Test Loss: ' .. WritetestLoss ..'\n')
-	else
-		print('save the model')
-		torch.save('HW2_network_v1.t7', model)
-		f:write('Epoc ' .. e .. ': \n')
-		WritetrainError = trainError[e]
-		WritetrainLoss = trainLoss[e] 
-		WritetestError = testError[e]
-		WritetestLoss = testLoss[e]
-		f:write('Training error: ' .. WritetrainError ..  ' Training Loss: ' .. WritetrainLoss .. '\n')
-		f:write('Test error: ' .. WritetestError .. ' Test Loss: ' .. WritetestLoss ..'\n')
-    end
-	f:close()
+	end
+    else
+       print('save the model')
+       torch.save('HW2_network_v1.t7', model)
+       f:write('Epoch ' .. e .. ': \n')
+       WritetrainError = trainError[e]
+       WritetrainLoss = trainLoss[e] 
+       WritetestError = testError[e]
+       WritetestLoss = testLoss[e]
+       f:write('Training error: ' .. WritetrainError ..  ' Training Loss: ' .. WritetrainLoss .. '\n')
+       f:write('Test error: ' .. WritetestError .. ' Test Loss: ' .. WritetestLoss ..'\n')
+    end	
+    f:close()
 end
 
 --  ****************************************************************
