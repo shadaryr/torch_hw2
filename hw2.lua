@@ -195,7 +195,7 @@ local f = assert(io.open('logFile2.log', 'w'), 'Failed to open input file')
    f:write('\n The criterion is: CrossEntropyCriterion')
    --f:write(criterionName)
    f:write('\n optim function: crossentropy')
-   f:write('sgd\n')
+   f:write('\nsgd\n')
 
 function shuffle(data,ydata) --shuffle data function
     local RandOrder = torch.randperm(data:size(1)):long()
@@ -282,7 +282,7 @@ end
 --  Executing the network training
 --  ****************************************************************
 
-epochs = 2
+epochs = 3
 trainLoss = torch.Tensor(epochs)
 testLoss = torch.Tensor(epochs)
 trainError = torch.Tensor(epochs)
@@ -311,7 +311,7 @@ for e = 1, epochs do
         print('Epoch ' .. e .. ':')
         print('Training error: ' .. trainError[e], 'Training Loss: ' .. trainLoss[e])
         print('Test error: ' .. testError[e], 'Test Loss: ' .. testLoss[e])
-		print('/nAccuracy:', 1-testError[e])
+		print('\nAccuracy:', 1-testError[e])
    end
    
    if e == 1 then
@@ -324,12 +324,14 @@ local WritetestError = testError[e]
 local WritetestLoss = testLoss[e]
 local f = assert(io.open('logFile2.log', 'a+'), 'Failed to open input file')
 	if e > 1 then
+		print('\nbest Error till this epoch: ')
+		print(bestError)
 		print('test Error: ')
 		print(testError[e])
-		print('\nbest Error: ')
-		print(bestError)
 	if (testError[e] < bestError) then
 	    bestError = testError[e]
+		print('\nbest Error: ')
+		print(bestError)
 	    print('save the model')
 	    torch.save('HW2_network_v1.t7', model)
 	        --f = assert(io.open('logFile.log', 'r'), 'Failed to open input file')
