@@ -184,7 +184,7 @@ w, dE_dw = model:getParameters()
 print('Number of parameters:', w:nElement())
 print(model)
 
-local f = assert(io.open('logFile2.log', 'w'), 'Failed to open input file')
+local f = assert(io.open('logFile3.log', 'w'), 'Failed to open input file')
  --print('open the file')
    --f:write('The model is: ')
 --print('start print to the log')
@@ -322,7 +322,7 @@ local WritetrainError = trainError[e]
 local WritetrainLoss = trainLoss[e] 
 local WritetestError = testError[e]
 local WritetestLoss = testLoss[e]
-local f = assert(io.open('logFile2.log', 'a+'), 'Failed to open input file')
+local f = assert(io.open('logFile3.log', 'a+'), 'Failed to open input file')
 	if e > 1 then
 		print('\nbest Error till this epoch: ')
 		print(bestError)
@@ -333,7 +333,7 @@ local f = assert(io.open('logFile2.log', 'a+'), 'Failed to open input file')
 		print('\nbest Error: ')
 		print(bestError)
 	    print('save the model')
-	    torch.save('HW2_network_v1.t7', model)
+	    torch.save('HW2_network_v2.t7', model)
 	        --f = assert(io.open('logFile.log', 'r'), 'Failed to open input file')
 	    f:write('Epoch ' .. e .. ': \n')
 	    WritetrainError = trainError[e]
@@ -345,7 +345,7 @@ local f = assert(io.open('logFile2.log', 'a+'), 'Failed to open input file')
 	end
     else
 		print('save the model')
-		torch.save('HW2_network_v1.t7', model)
+		torch.save('HW2_network_v2.t7', model)
 		f:write('Epoch ' .. e .. ': \n')
 		WritetrainError = trainError[e]
 		WritetrainLoss = trainLoss[e] 
