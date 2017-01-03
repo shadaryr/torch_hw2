@@ -306,7 +306,7 @@ for e = 1, epochs do
 	
 	if e == 1 then
       bestError = testError[e]
-   end
+	end
    
 end
 
@@ -352,4 +352,17 @@ end
 --  ****************************************************************
 
 plotError(trainError, testError, 'Classification Error')
-plotLoss (trainLoss, testLoss, 'Classification Loss')
+
+require 'gnuplot'
+local range = torch.range(1, epochs)
+gnuplot.pngfigure('loss.png')
+gnuplot.plot({'trainLoss',trainLoss},{'testLoss',testLoss})
+gnuplot.xlabel('epochs')
+gnuplot.ylabel('Loss')
+gnuplot.plotflush()
+
+gnuplot.pngfigure('error.png')
+gnuplot.plot({'trainError',trainError},{'testError',testError})
+gnuplot.xlabel('epochs')
+gnuplot.ylabel('Error')
+gnuplot.plotflush()
