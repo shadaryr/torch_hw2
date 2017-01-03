@@ -318,7 +318,6 @@ local f = assert(io.open('logFile1.log', 'a+'), 'Failed to open input file')
 		print(testError[e])
 		print('\nbest Error: ')
 		print(bestError)
-	end
 	if (testError[e] < bestError) then
 	    bestError = testError[e]
 	    print('save the model')
@@ -331,19 +330,18 @@ local f = assert(io.open('logFile1.log', 'a+'), 'Failed to open input file')
 	    WritetestLoss = testLoss[e]
 	    f:write('Training error: ' .. WritetrainError ..  ' Training Loss: ' .. WritetrainLoss .. '\n')
 	    f:write('Test error: ' .. WritetestError .. ' Test Loss: ' .. WritetestLoss ..'\n')
-	end
 	else
-       print('save the model')
-       torch.save('HW2_network_v1.t7', model)
-       f:write('Epoc ' .. e .. ': \n')
-       WritetrainError = trainError[e]
-       WritetrainLoss = trainLoss[e] 
-       WritetestError = testError[e]
-       WritetestLoss = testLoss[e]
-       f:write('Training error: ' .. WritetrainError ..  ' Training Loss: ' .. WritetrainLoss .. '\n')
-       f:write('Test error: ' .. WritetestError .. ' Test Loss: ' .. WritetestLoss ..'\n')
+		print('save the model')
+		torch.save('HW2_network_v1.t7', model)
+		f:write('Epoc ' .. e .. ': \n')
+		WritetrainError = trainError[e]
+		WritetrainLoss = trainLoss[e] 
+		WritetestError = testError[e]
+		WritetestLoss = testLoss[e]
+		f:write('Training error: ' .. WritetrainError ..  ' Training Loss: ' .. WritetrainLoss .. '\n')
+		f:write('Test error: ' .. WritetestError .. ' Test Loss: ' .. WritetestLoss ..'\n')
     end
-    f:close()
+	f:close()
 end
 
 --  ****************************************************************
