@@ -106,7 +106,7 @@ do -- data augmentation module
         --if 0 == mod  then image.hflip(input[i]) end 
 		--if 1 == mod  then randomcrop(input[i], 10, 'reflection') end
 		--if 2 == mod  then randomcrop(input[i], 10, 'zero') end
-      image.hflip(input[i])
+      randomcrop(input[i], 10, 'zero')
 	  end -- and if mod ==3 -> do nothing.
     end
     self.output:set(input:cuda())
