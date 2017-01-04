@@ -103,7 +103,6 @@ do -- data augmentation module
       local permutation = torch.randperm(input:size(1))
       for i=1,input:size(1) do
 		local mod = permutation[i] % 4
-		print ('mod is:', mod) --TODO: DELETE THIS!! FOR DEBUG
         if 0 == mod  then image.hflip(input[i]) end 
 		if 1 == mod  then randomcrop(input[i], 10, 'reflection') end
 		if 2 == mod  then randomcrop(input[i], 10, 'zero') end
