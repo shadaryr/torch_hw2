@@ -1,0 +1,4 @@
+Number of parameters: Description of model: sgd, batchflip, dropout 0.246974
+ The criterion is: CrossEntropyCriterion
+ optim function: crossentropysgd
+batchSize: 32
