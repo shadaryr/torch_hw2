@@ -101,6 +101,7 @@ do -- data augmentation module
   function BatchFlip:updateOutput(input)
     if self.train then
       local permutation = torch.randperm(input:size(1))
+	  print permutation --DELETE ME- for debug
       for i=1,input:size(1) do
 		local mod = permutation[i] % 4
         if 0 == mod  then image.hflip(input[i]) end 
@@ -119,7 +120,7 @@ end
 --  ****************************************************************
 -- all the calculation near the layers are the output size of the layer
 local model = nn.Sequential()
---model:add(nn.BatchFlip():float())--data augmentation layer
+model:add(nn.BatchFlip():float())--data augmentation layer
 model:add(cudnn.SpatialConvolution(3, 64, 5, 5, 1, 1, 2, 2))
 model:add(nn.SpatialBatchNormalization(64))    --Batch normalization will provide quicker convergence
 model:add(cudnn.ReLU(true))
@@ -184,7 +185,7 @@ w, dE_dw = model:getParameters()
 print('Number of parameters:', w:nElement())
 print(model)
 
-local f = assert(io.open('logFile4.log', 'w'), 'Failed to open input file')
+local f = assert(io.open('logFile_with_flip_mod_4.log', 'w'), 'Failed to open input file')
  --print('open the file')
    --f:write('The model is: ')
 --print('start print to the log')
@@ -229,10 +230,10 @@ function forwardNet(data,labels, train)
     end
     for i = 1, data:size(1) - batchSize, batchSize do
         numBatches = numBatches + 1
-        local x = data:narrow(1, i, batchSize):cuda()
-        local yt = labels:narrow(1, i, batchSize):cuda()
-		--local x = data:narrow(1, i, batchSize)
-        --local yt = labels:narrow(1, i, batchSize)
+        --local x = data:narrow(1, i, batchSize):cuda()
+        --local yt = labels:narrow(1, i, batchSize):cuda()
+		local x = data:narrow(1, i, batchSize)
+        local yt = labels:narrow(1, i, batchSize)
 		local y = model:forward(x)
         local err = criterion:forward(y, yt)
         lossAcc = lossAcc + err
@@ -322,7 +323,7 @@ local WritetrainError = trainError[e]
 local WritetrainLoss = trainLoss[e] 
 local WritetestError = testError[e]
 local WritetestLoss = testLoss[e]
-local f = assert(io.open('logFile4.log', 'a+'), 'Failed to open input file')
+local f = assert(io.open('logFile_with_flip_mod_4.log', 'a+'), 'Failed to open input file')
 	if e > 1 then
 		print('\nbest Error till this epoch: ')
 		print(bestError)
@@ -333,7 +334,7 @@ local f = assert(io.open('logFile4.log', 'a+'), 'Failed to open input file')
 		print('\nbest Error: ')
 		print(bestError)
 	    print('save the model')
-	    torch.save('HW2_network_v3.t7', model)
+	    torch.save('HW2_network_with_flip_mod_4.t7', model)
 	        --f = assert(io.open('logFile.log', 'r'), 'Failed to open input file')
 	    f:write('Epoch ' .. e .. ': \n')
 	    WritetrainError = trainError[e]
@@ -345,7 +346,7 @@ local f = assert(io.open('logFile4.log', 'a+'), 'Failed to open input file')
 	end
     else
 		print('save the model')
-		torch.save('HW2_network_v3.t7', model)
+		torch.save('HW2_network_with_flip_mod_4.t7', model)
 		f:write('Epoch ' .. e .. ': \n')
 		WritetrainError = trainError[e]
 		WritetrainLoss = trainLoss[e] 
@@ -365,13 +366,13 @@ plotError(trainError, testError, 'Classification Error')
 
 require 'gnuplot'
 local range = torch.range(1, epochs)
-gnuplot.pngfigure('loss4.png')
+gnuplot.pngfigure('loss_with_flip_mod_4.png')
 gnuplot.plot({'trainLoss',trainLoss},{'testLoss',testLoss})
 gnuplot.xlabel('epochs')
 gnuplot.ylabel('Loss')
 gnuplot.plotflush()
 
-gnuplot.pngfigure('error4.png')
+gnuplot.pngfigure('error_with_flip_mod_4.png')
 gnuplot.plot({'trainError',trainError},{'testError',testError})
 gnuplot.xlabel('epochs')
 gnuplot.ylabel('Error')
