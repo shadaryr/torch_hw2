@@ -100,13 +100,14 @@ do -- data augmentation module
 
   function BatchFlip:updateOutput(input)
     if self.train then
-      local permutation = torch.randperm(input:size(1))
+      --local permutation = torch.randperm(input:size(1))
       for i=1,input:size(1) do
-		local mod = permutation[i] % 4
-        if 0 == mod  then image.hflip(input[i]) end 
-		if 1 == mod  then randomcrop(input[i], 10, 'reflection') end
-		if 2 == mod  then randomcrop(input[i], 10, 'zero') end
-      end -- and if mod ==3 -> do nothing.
+		--local mod = permutation[i] % 4
+        --if 0 == mod  then image.hflip(input[i]) end 
+		--if 1 == mod  then randomcrop(input[i], 10, 'reflection') end
+		--if 2 == mod  then randomcrop(input[i], 10, 'zero') end
+      hflip(input[i])
+	  end -- and if mod ==3 -> do nothing.
     end
     self.output:set(input:cuda())
     return self.output
