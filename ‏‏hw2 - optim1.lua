@@ -185,7 +185,7 @@ w, dE_dw = model:getParameters()
 print('Number of parameters:', w:nElement())
 print(model)
 
-local f = assert(io.open('logFile_with_flip_mod_4.log', 'w'), 'Failed to open input file')
+local f = assert(io.open('logFile_with_adamax.log', 'w'), 'Failed to open input file')
  --print('open the file')
    --f:write('The model is: ')
 --print('start print to the log')
@@ -323,7 +323,7 @@ local WritetrainError = trainError[e]
 local WritetrainLoss = trainLoss[e]
 local WritetestError = testError[e]
 local WritetestLoss = testLoss[e]
-local f = assert(io.open('logFile_with_flip_mod_4.log', 'a+'), 'Failed to open input file')
+local f = assert(io.open('logFile_with_adamax.log', 'a+'), 'Failed to open input file')
         if e > 1 then
                 print('\nbest Error till this epoch: ')
                 print(bestError)
@@ -334,7 +334,7 @@ local f = assert(io.open('logFile_with_flip_mod_4.log', 'a+'), 'Failed to open i
                 print('\nbest Error: ')
                 print(bestError)
             print('save the model')
-            torch.save('HW2_network_with_flip_mod_4.t7', model)
+            torch.save('HW2_network_with_adamax.t7', model)
                 --f = assert(io.open('logFile.log', 'r'), 'Failed to open input file')
             f:write('Epoch ' .. e .. ': \n')
             WritetrainError = trainError[e]
@@ -346,7 +346,7 @@ local f = assert(io.open('logFile_with_flip_mod_4.log', 'a+'), 'Failed to open i
         end
     else
                 print('save the model')
-                torch.save('HW2_network_with_flip_mod_4.t7', model)
+                torch.save('HW2_network_with_adamax.t7', model)
                 f:write('Epoch ' .. e .. ': \n')
                 WritetrainError = trainError[e]
                 WritetrainLoss = trainLoss[e]
@@ -366,13 +366,13 @@ plotError(trainError, testError, 'Classification Error')
 
 require 'gnuplot'
 local range = torch.range(1, epochs)
-gnuplot.pngfigure('loss_with_flip_mod_4.png')
+gnuplot.pngfigure('loss_with_adamax.png')
 gnuplot.plot({'trainLoss',trainLoss},{'testLoss',testLoss})
 gnuplot.xlabel('epochs')
 gnuplot.ylabel('Loss')
 gnuplot.plotflush()
 
-gnuplot.pngfigure('error_with_flip_mod_4.png')
+gnuplot.pngfigure('error_with_adamax.png')
 gnuplot.plot({'trainError',trainError},{'testError',testError})
 gnuplot.xlabel('epochs')
 gnuplot.ylabel('Error')
