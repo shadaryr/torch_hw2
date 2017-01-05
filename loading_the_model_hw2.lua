@@ -39,7 +39,7 @@ function returnAvgError()
 	testLabels = testLabels:cuda()
 
 	--load the model (the trained net)
-	model = torch.load('nn_hw1.t7')
+	model = torch.load('HW2_network_v2.t7')
 	model:evaluate() --turn off drop out
 
 	--calculating the estimated labels with the trained nn
