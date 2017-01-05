@@ -105,6 +105,7 @@ function returnAvgError()
 	local lossAcc = 0
 	local numBatches = 0
 	local batchSize = 32
+	criterion = nn.CrossEntropyCriterion():cuda()
 	--load the model (the trained net)
 	model = torch.load('HW2_network_v2.t7')
 	model:evaluate() --turn off drop out
