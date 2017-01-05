@@ -100,15 +100,26 @@ function returnAvgError()
 	  end
 	end
 
+	local confusion = optim.ConfusionMatrix(classes)
+	local lossAcc = 0
+	local numBatches = 0
+	local batchSize = 32
 	--load the model (the trained net)
 	model = torch.load('HW2_network_v2.t7')
 	model:evaluate() --turn off drop out
 
 	--calculating the estimated labels with the trained nn
-	local y_hat = model:forward(testData)
+	for i = 1, testData:size(1) - batchSize, batchSize do
+        numBatches = numBatches + 1
+        local x = testData:narrow(1, i, batchSize)
+        local yt = testLabels:narrow(1, i, batchSize)
+        local y = model:forward(x)
+        local err = criterion:forward(y, yt)
+        lossAcc = lossAcc + err
+        confusion:batchAdd(y,yt)
+    end
 	-- creating and calculating confusion matrix
-	local confusion = optim.ConfusionMatrix(torch.range(0,9):totable())
-	confusion:batchAdd(y_hat,testLabels)
+	confusion:batchAdd(y,yt)
 
 	-- calculating average error
 	confusion:updateValids()
