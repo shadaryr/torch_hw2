@@ -1,4 +1,5 @@
 function returnAvgError()
+	require 'optim'
 	require 'torch'
 	require 'image'
 	require 'nn'
