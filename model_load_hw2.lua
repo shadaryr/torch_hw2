@@ -120,9 +120,7 @@ function returnAvgError()
         lossAcc = lossAcc + err
         confusion:batchAdd(y,yt)
     end
-	-- creating and calculating confusion matrix
-	confusion:batchAdd(y,yt)
-
+	
 	-- calculating average error
 	confusion:updateValids()
 	local avgError = 1 - confusion.totalValid
