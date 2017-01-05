@@ -35,8 +35,8 @@ function returnAvgError()
 	end
 
 	-- tranfering to cuda
-	testData = testData:cuda()
-	testLabels = testLabels:cuda()
+	--testData = testData:cuda()
+	--testLabels = testLabels:cuda()
 
 	--load the model (the trained net)
 	model = torch.load('HW2_network_v2.t7')
