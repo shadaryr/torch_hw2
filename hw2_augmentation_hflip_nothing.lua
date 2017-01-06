@@ -205,10 +205,10 @@ function forwardNet(data,labels, train)
     end
     for i = 1, data:size(1) - batchSize, batchSize do
         numBatches = numBatches + 1
-        local x = data:narrow(1, i, batchSize):cuda()
-        local yt = labels:narrow(1, i, batchSize):cuda()
-        --local x = data:narrow(1, i, batchSize)
-        --local yt = labels:narrow(1, i, batchSize)
+        --local x = data:narrow(1, i, batchSize):cuda()
+        --local yt = labels:narrow(1, i, batchSize):cuda()
+        local x = data:narrow(1, i, batchSize)
+        local yt = labels:narrow(1, i, batchSize)
         local y = model:forward(x)
         local err = criterion:forward(y, yt)
         lossAcc = lossAcc + err
