@@ -1,0 +1,93 @@
+Number of parameters: Description of model: adamax, NO batchflip, dropout 0.246974
+ The criterion is: CrossEntropyCriterion
+ optim function: adamaxbatchSize: 32
+Epoch 1: 
+Training error: 0.58370678617157 Training Loss: 1.5900055432976
+Test error: 0.52293669871795 Test Loss: 1.4629163281658
+Epoch 2: 
+Training error: 0.44108114596671 Training Loss: 1.2353582996183
+Test error: 0.39893830128205 Test Loss: 1.1016430637011
+Epoch 4: 
+Training error: 0.35901488476312 Training Loss: 1.0194672036453
+Test error: 0.34965945512821 Test Loss: 0.9757207901432
+Epoch 5: 
+Training error: 0.33900848271447 Training Loss: 0.96586418293044
+Test error: 0.33133012820513 Test Loss: 0.94768302620221
+Epoch 6: 
+Training error: 0.32526408450704 Training Loss: 0.9253141281127
+Test error: 0.29326923076923 Test Loss: 0.82564081948919
+Epoch 8: 
+Training error: 0.29929577464789 Training Loss: 0.85353855569292
+Test error: 0.28385416666667 Test Loss: 0.81521777111368
+Epoch 10: 
+Training error: 0.2835107234315 Training Loss: 0.80687943965235
+Test error: 0.25871394230769 Test Loss: 0.74594013421581
+Epoch 12: 
+Training error: 0.27058658770807 Training Loss: 0.77977225337077
+Test error: 0.25080128205128 Test Loss: 0.72099935932037
+Epoch 14: 
+Training error: 0.25978313060179 Training Loss: 0.7436834469762
+Test error: 0.24348958333333 Test Loss: 0.69813465541945
+Epoch 15: 
+Training error: 0.25622199103713 Training Loss: 0.73359641189497
+Test error: 0.23808092948718 Test Loss: 0.67927997645277
+Epoch 17: 
+Training error: 0.24849951984635 Training Loss: 0.71290645256123
+Test error: 0.22956730769231 Test Loss: 0.66314580014501
+Epoch 21: 
+Training error: 0.2395166453265 Training Loss: 0.6800845791222
+Test error: 0.22816506410256 Test Loss: 0.66090842565665
+Epoch 23: 
+Training error: 0.2321142765685 Training Loss: 0.66849863275447
+Test error: 0.22706330128205 Test Loss: 0.65668666061874
+Epoch 25: 
+Training error: 0.2276328425096 Training Loss: 0.65729014283564
+Test error: 0.22125400641026 Test Loss: 0.63843784562479
+Epoch 26: 
+Training error: 0.22673255441741 Training Loss: 0.65119921195675
+Test error: 0.22075320512821 Test Loss: 0.63795145285817
+Epoch 28: 
+Training error: 0.22185099231754 Training Loss: 0.63947366204747
+Test error: 0.21925080128205 Test Loss: 0.63681720330929
+Epoch 29: 
+Training error: 0.22237115877081 Training Loss: 0.63376293969597
+Test error: 0.21213942307692 Test Loss: 0.61621374321672
+Epoch 30: 
+Training error: 0.2171895006402 Training Loss: 0.62956995363425
+Test error: 0.21113782051282 Test Loss: 0.61656489629203
+Epoch 32: 
+Training error: 0.21792973751601 Training Loss: 0.62348327454699
+Test error: 0.2099358974359 Test Loss: 0.61039810097561
+Epoch 33: 
+Training error: 0.21512884122919 Training Loss: 0.61685853655642
+Test error: 0.20833333333333 Test Loss: 0.61061124140636
+Epoch 39: 
+Training error: 0.2097471190781 Training Loss: 0.60046927405762
+Test error: 0.19811698717949 Test Loss: 0.58392802262918
+Epoch 42: 
+Training error: 0.20748639564661 Training Loss: 0.59529907491044
+Test error: 0.19731570512821 Test Loss: 0.57091870755912
+Epoch 58: 
+Training error: 0.19594270166453 Training Loss: 0.56209860291814
+Test error: 0.19190705128205 Test Loss: 0.57732995150563
+Epoch 80: 
+Training error: 0.18583946862996 Training Loss: 0.53487027580546
+Test error: 0.18790064102564 Test Loss: 0.55184635586846
+Epoch 104: 
+Training error: 0.17733674775928 Training Loss: 0.51488297128342
+Test error: 0.18689903846154 Test Loss: 0.5554104302174
+Epoch 114: 
+Training error: 0.17515604993598 Training Loss: 0.50128982032002
+Test error: 0.18469551282051 Test Loss: 0.55666993835416
+Epoch 119: 
+Training error: 0.17329545454545 Training Loss: 0.49915652183122
+Test error: 0.18399439102564 Test Loss: 0.5478897101413
+Epoch 141: 
+Training error: 0.17141485275288 Training Loss: 0.48961618794522
+Test error: 0.17958733974359 Test Loss: 0.54732549582154
+Epoch 219: 
+Training error: 0.16393245838668 Training Loss: 0.46823120266008
+Test error: 0.17788461538462 Test Loss: 0.53392103476784
+Epoch 314: 
+Training error: 0.15570982714469 Training Loss: 0.44456549108067
+Test error: 0.17698317307692 Test Loss: 0.53591326423562

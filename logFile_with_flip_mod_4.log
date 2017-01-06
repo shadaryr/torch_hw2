@@ -1,0 +1,11 @@
+Number of parameters: Description of model: sgd, NO batchflip, dropout 0.2, test and train plots number446974
+ The criterion is: CrossEntropyCriterion
+ optim function: crossentropy
+sgd
+batchSize: 32
+Epoch 1: 
+Training error: 0.55513764404609 Training Loss: 1.5241718431517
+Test error: 0.51522435897436 Test Loss: 1.4595167505053
+Epoch 2: 
+Training error: 0.42233514724712 Training Loss: 1.1861503839722
+Test error: 0.45653044871795 Test Loss: 1.3228133924496
