@@ -117,7 +117,7 @@ end
 --  ****************************************************************
 -- all the calculation near the layers are the output size of the layer
 local model = nn.Sequential()
---model:add(nn.BatchFlip():float())--data augmentation layer
+model:add(nn.BatchFlip():float())--data augmentation layer
 model:add(cudnn.SpatialConvolution(3, 64, 5, 5, 1, 1, 2, 2))
 model:add(nn.SpatialBatchNormalization(64))    --Batch normalization will provide quicker convergence
 model:add(cudnn.ReLU(true))
@@ -160,13 +160,13 @@ w, dE_dw = model:getParameters()
 print('Number of parameters:', w:nElement())
 print(model)
 
-local f = assert(io.open('logFile_sgd_decreasing_learning_rate_no_batchfilp.log', 'w'), 'Failed to open input file')
+local f = assert(io.open('logFile_sgd_decreasing_learning_rate_batchfilp_3_hflip_reflec_nothing.log', 'w'), 'Failed to open input file')
  --print('open the file')
    --f:write('The model is: ')
 --print('start print to the log')
    --f:write(model)
    f:write('Number of parameters: ')
-   f:write('Description of model: sgd, NO batchflip, dropout 0.2, learning rate decrease by 2 factor every 5 epochs')
+   f:write('Description of model: sgd, batchflip: 1/3 hflip 1/3 reflection random crop, 1/3 nothing, dropout 0.2, learning rate decrease by 2 factor every 5 epochs')
    f:write(w:nElement())
    f:write('\n The criterion is: CrossEntropyCriterion')
    --f:write(criterionName)
@@ -205,10 +205,10 @@ function forwardNet(data,labels, train)
     end
     for i = 1, data:size(1) - batchSize, batchSize do
         numBatches = numBatches + 1
-        --local x = data:narrow(1, i, batchSize):cuda()
-        --local yt = labels:narrow(1, i, batchSize):cuda()
-        local x = data:narrow(1, i, batchSize)
-        local yt = labels:narrow(1, i, batchSize)
+        local x = data:narrow(1, i, batchSize):cuda()
+        local yt = labels:narrow(1, i, batchSize):cuda()
+        --local x = data:narrow(1, i, batchSize)
+        --local yt = labels:narrow(1, i, batchSize)
         local y = model:forward(x)
         local err = criterion:forward(y, yt)
         lossAcc = lossAcc + err
@@ -299,7 +299,7 @@ local WritetrainError = trainError[e]
 local WritetrainLoss = trainLoss[e]
 local WritetestError = testError[e]
 local WritetestLoss = testLoss[e]
-local f = assert(io.open('logFile_sgd_decreasing_learning_rate_no_batchfilp.log', 'a+'), 'Failed to open input file')
+local f = assert(io.open('logFile_sgd_decreasing_learning_rate_batchfilp_3_hflip_reflec_nothing.log', 'a+'), 'Failed to open input file')
         if e > 1 then
                 print('\nbest Error till this epoch: ')
                 print(bestError)
@@ -310,7 +310,7 @@ local f = assert(io.open('logFile_sgd_decreasing_learning_rate_no_batchfilp.log'
                 print('\nbest Error: ')
                 print(bestError)
             print('save the model')
-            torch.save('HW2_network_sgd_decreasing_learning_rate_no_batchfilp.t7', model)
+            torch.save('HW2_network_sgd_decreasing_learning_rate_batchfilp_3_hflip_reflec_nothing.t7', model)
                 --f = assert(io.open('logFile.log', 'r'), 'Failed to open input file')
             f:write('Epoch ' .. e .. ': \n')
             WritetrainError = trainError[e]
@@ -322,7 +322,7 @@ local f = assert(io.open('logFile_sgd_decreasing_learning_rate_no_batchfilp.log'
         end
     else
                 print('save the model')
-                torch.save('HW2_network_sgd_decreasing_learning_rate_no_batchfilp.t7', model)
+                torch.save('HW2_network_sgd_decreasing_learning_rate_batchfilp_3_hflip_reflec_nothing.t7', model)
                 f:write('Epoch ' .. e .. ': \n')
                 WritetrainError = trainError[e]
                 WritetrainLoss = trainLoss[e]
@@ -342,13 +342,13 @@ plotError(trainError, testError, 'Classification Error')
 
 require 'gnuplot'
 local range = torch.range(1, epochs)
-gnuplot.pngfigure('loss_sgd_decreasing_learning_rate_no_batchfilp.png')
+gnuplot.pngfigure('loss_sgd_decreasing_learning_rate_batchfilp_3_hflip_reflec_nothing.png')
 gnuplot.plot({'trainLoss',trainLoss},{'testLoss',testLoss})
 gnuplot.xlabel('epochs')
 gnuplot.ylabel('Loss')
 gnuplot.plotflush()
 
-gnuplot.pngfigure('error_sgd_decreasing_learning_rate_no_batchfilp.png')
+gnuplot.pngfigure('error_sgd_decreasing_learning_rate_batchfilp_3_hflip_reflec_nothing.png')
 gnuplot.plot({'trainError',trainError},{'testError',testError})
 gnuplot.xlabel('epochs')
 gnuplot.ylabel('Error')

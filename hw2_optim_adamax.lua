@@ -160,17 +160,17 @@ w, dE_dw = model:getParameters()
 print('Number of parameters:', w:nElement())
 print(model)
 
-local f = assert(io.open('logFile_sgd_decreasing_learning_rate_no_batchfilp.log', 'w'), 'Failed to open input file')
+local f = assert(io.open('logFile_adamax_no_batchfilp.log', 'w'), 'Failed to open input file')
  --print('open the file')
    --f:write('The model is: ')
 --print('start print to the log')
    --f:write(model)
    f:write('Number of parameters: ')
-   f:write('Description of model: sgd, NO batchflip, dropout 0.2, learning rate decrease by 2 factor every 5 epochs')
+   f:write('Description of model: adamax, NO batchflip, dropout 0.2')
    f:write(w:nElement())
    f:write('\n The criterion is: CrossEntropyCriterion')
    --f:write(criterionName)
-   f:write('\n optim function: sgd')
+   f:write('\n optim function: adamax')
 
    
 function shuffle(data,ydata) --shuffle data function
@@ -223,7 +223,7 @@ function forwardNet(data,labels, train)
                 return err, dE_dw
             end
 
-            optim.sgd(feval, w, optimState)
+            optim.adamax(feval, w, optimState)
         end
     end
 
@@ -278,7 +278,7 @@ for e = 1, epochs do
     testLoss[e], testError[e], confusion = forwardNet(testData, testLabels, false)
 
     if e % 5 == 0 then
-		optimState.learningRate = 0.5 * optimState.learningRate
+		--optimState.learningRate = 0.5 * optimState.learningRate
         print('Epoch ' .. e .. ':')
         print('Training error: ' .. trainError[e], 'Training Loss: ' .. trainLoss[e])
         print('Test error: ' .. testError[e], 'Test Loss: ' .. testLoss[e])
@@ -299,7 +299,7 @@ local WritetrainError = trainError[e]
 local WritetrainLoss = trainLoss[e]
 local WritetestError = testError[e]
 local WritetestLoss = testLoss[e]
-local f = assert(io.open('logFile_sgd_decreasing_learning_rate_no_batchfilp.log', 'a+'), 'Failed to open input file')
+local f = assert(io.open('logFile_adamax_no_batchfilp.log', 'a+'), 'Failed to open input file')
         if e > 1 then
                 print('\nbest Error till this epoch: ')
                 print(bestError)
@@ -310,7 +310,7 @@ local f = assert(io.open('logFile_sgd_decreasing_learning_rate_no_batchfilp.log'
                 print('\nbest Error: ')
                 print(bestError)
             print('save the model')
-            torch.save('HW2_network_sgd_decreasing_learning_rate_no_batchfilp.t7', model)
+            torch.save('HW2_network_adamax_no_batchfilp.t7', model)
                 --f = assert(io.open('logFile.log', 'r'), 'Failed to open input file')
             f:write('Epoch ' .. e .. ': \n')
             WritetrainError = trainError[e]
@@ -322,7 +322,7 @@ local f = assert(io.open('logFile_sgd_decreasing_learning_rate_no_batchfilp.log'
         end
     else
                 print('save the model')
-                torch.save('HW2_network_sgd_decreasing_learning_rate_no_batchfilp.t7', model)
+                torch.save('HW2_network_adamax_no_batchfilp.t7', model)
                 f:write('Epoch ' .. e .. ': \n')
                 WritetrainError = trainError[e]
                 WritetrainLoss = trainLoss[e]
@@ -342,13 +342,13 @@ plotError(trainError, testError, 'Classification Error')
 
 require 'gnuplot'
 local range = torch.range(1, epochs)
-gnuplot.pngfigure('loss_sgd_decreasing_learning_rate_no_batchfilp.png')
+gnuplot.pngfigure('loss_adamax_no_batchfilp.png')
 gnuplot.plot({'trainLoss',trainLoss},{'testLoss',testLoss})
 gnuplot.xlabel('epochs')
 gnuplot.ylabel('Loss')
 gnuplot.plotflush()
 
-gnuplot.pngfigure('error_sgd_decreasing_learning_rate_no_batchfilp.png')
+gnuplot.pngfigure('error_adamax_no_batchfilp.png')
 gnuplot.plot({'trainError',trainError},{'testError',testError})
 gnuplot.xlabel('epochs')
 gnuplot.ylabel('Error')
